@@ -1,3 +1,4 @@
+import { module as DocArbStip } from 'doc-arb-stip/arbitrum-stip-grantee';
 import * as DocumentModels from 'document-model-libs/document-models';
 import { Action, DocumentModel } from 'document-model/document';
 import { module as DocumentModelLib } from 'document-model/document-model';
@@ -6,6 +7,7 @@ import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
 
 export const documentModels = [
     DocumentModelLib,
+    DocArbStip,
     ...Object.values(DocumentModels),
 ] as DocumentModel[];
 

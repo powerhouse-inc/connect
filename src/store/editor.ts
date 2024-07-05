@@ -4,7 +4,11 @@ import { unwrap } from 'jotai/utils';
 
 async function loadEditors() {
     const Editors = await import('document-model-libs/editors');
-    return [...Object.values(Editors)] as ExtendedEditor[];
+    const StipEditors = await import('doc-arb-stip/editors');
+    return [
+        ...Object.values(Editors),
+        StipEditors.ArbitrumStipGrantee,
+    ] as ExtendedEditor[];
 }
 
 const editorsAtom = atom<Promise<ExtendedEditor[]>>(loadEditors);

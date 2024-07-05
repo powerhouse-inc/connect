@@ -97,6 +97,7 @@
         "@sentry/react": "^7.109.0",
         "@tanstack/react-virtual": "^3.8.1",
         "did-key-creator": "^1.2.0",
+        "doc-arb-stip": "npm:document-model-libs@^1.59.0-arbitrum-stip.14",
         "document-drive": "^1.0.0-alpha-arb.81",
         "document-model": "1.7.0",
         "document-model-libs": "^1.59.0-arbitrum.14",
