@@ -322,12 +322,14 @@ const Content = () => {
                     >
                         <DocumentEditor
                             document={selectedDocument}
+                            fileNodeId={selectedFileNode.id}
                             onClose={() => {
                                 navigateToItemId(
                                     selectedFileNode.parentFolder || driveID,
                                 );
                                 setSelectedFileNode(undefined);
                             }}
+                            fileId={selectedFileNode.id}
                             onChange={onDocumentChangeHandler}
                             onExport={() => exportDocument(selectedDocument)}
                             onAddOperation={handleAddOperation}
@@ -363,6 +365,7 @@ const Content = () => {
                                         path={selectedPath || ''}
                                         folderItem={selectedFolder}
                                         decodedDriveID={decodedDriveID}
+                                        isRemoteDrive={isRemoteDrive}
                                         onFolderSelected={
                                             onFolderSelectedHandler
                                         }
