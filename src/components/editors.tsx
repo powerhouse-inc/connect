@@ -7,26 +7,19 @@ import {
     Document,
     EditorContext,
     Operation,
-    OperationSignatureContext,
-    Reducer,
-    User,
     actions,
-    utils,
 } from 'document-model/document';
 import { Action as HistoryAction } from 'history';
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useState } from 'react';
-import { useConnectCrypto, useConnectDid } from 'src/hooks/useConnectCrypto';
+import { useConnectDid } from 'src/hooks/useConnectCrypto';
 import { useUndoRedoShortcuts } from 'src/hooks/useUndoRedoShortcuts';
 import { useUserPermissions } from 'src/hooks/useUserPermissions';
 import { useDocumentModel } from 'src/store/document-model';
 import { useEditor } from 'src/store/editor';
 import { themeAtom } from 'src/store/theme';
 import { useUser } from 'src/store/user';
-import {
-    DocumentDispatchCallback,
-    useDocumentDispatch,
-} from 'src/utils/document-model';
+import { useDocumentDispatch } from 'src/utils/document-model';
 import Button from './button';
 import history from './history';
 
@@ -52,43 +45,7 @@ export interface IProps extends EditorProps {
     onExport: () => void;
     onAddOperation: (operation: Operation) => Promise<void>;
     onOpenSwitchboardLink?: () => Promise<void>;
-    fileId: string;
 }
-
-const signOperation = async (
-    operation: Operation,
-    sign: (data: Uint8Array) => Promise<Uint8Array>,
-    documentId: string,
-    document: Document<unknown, Action>,
-    reducer?: Reducer<unknown, Action, unknown>,
-    user?: User,
-) => {
-    if (!user) return operation;
-    if (!operation.context) return operation;
-    if (!operation.context.signer) return operation;
-    if (!reducer) {
-        console.error('Document model does not have a reducer');
-        return operation;
-    }
-
-    const context: Omit<
-        OperationSignatureContext,
-        'operation' | 'previousStateHash'
-    > = {
-        documentId,
-        signer: operation.context.signer,
-    };
-
-    const signedOperation = await utils.buildSignedOperation(
-        operation,
-        reducer,
-        document,
-        context,
-        sign,
-    );
-
-    return signedOperation;
-};
 
 export const DocumentEditor: React.FC<IProps> = ({
     fileNodeId,
@@ -96,14 +53,12 @@ export const DocumentEditor: React.FC<IProps> = ({
     onChange,
     onClose,
     onExport,
-    fileId,
     onAddOperation,
     onOpenSwitchboardLink,
 }) => {
     const [showRevisionHistory, setShowRevisionHistory] = useState(false);
     const user = useUser();
     const connectDid = useConnectDid();
-    const { sign } = useConnectCrypto();
     const documentModel = useDocumentModel(initialDocument.documentType);
     const editor = useEditor(initialDocument.documentType);
     const theme = useAtomValue(themeAtom);
@@ -130,9 +85,8 @@ export const DocumentEditor: React.FC<IProps> = ({
                 networkId: user.networkId,
                 chainId: user.chainId,
             },
-            signatures: [],
+            signature: '',
         };
-
         return {
             ...action,
             context: {
@@ -145,28 +99,14 @@ export const DocumentEditor: React.FC<IProps> = ({
         action: BaseAction | Action,
         onErrorCallback?: ActionErrorCallback,
     ) {
-        const callback: DocumentDispatchCallback<unknown, Action, unknown> = (
-            operation,
-            state,
-        ) => {
-            const { prevState } = state;
-
-            signOperation(
-                operation,
-                sign,
-                fileId,
-                prevState,
-                documentModel?.reducer,
-                user,
-            )
-                .then(op => {
-                    window.documentEditorDebugTools?.pushOperation(operation);
-                    return onAddOperation(op);
-                })
-                .catch(console.error);
-        };
-
-        _dispatch(addActionContext(action), callback, onErrorCallback);
+        _dispatch(
+            addActionContext(action),
+            operation => {
+                window.documentEditorDebugTools?.pushOperation(operation);
+                onAddOperation(operation).catch(console.error);
+            },
+            onErrorCallback,
+        );
     }
 
     useEffect(() => {

@@ -8,17 +8,9 @@ import type {
 } from 'document-model/document';
 import { useEffect, useState } from 'react';
 
-export type DocumentDispatchCallback<State, A extends Action, LocalState> = (
-    operation: Operation,
-    state: {
-        prevState: Document<State, A, LocalState>;
-        newState: Document<State, A, LocalState>;
-    },
-) => void;
-
-export type DocumentDispatch<State, A extends Action, LocalState> = (
+export type DocumentDispatch<A> = (
     action: A | BaseAction,
-    callback?: DocumentDispatchCallback<State, A, LocalState>,
+    callback?: (operation: Operation) => void,
     onErrorCallback?: ActionErrorCallback,
 ) => void;
 
@@ -43,11 +35,7 @@ export function useDocumentDispatch<State, A extends Action, LocalState>(
     documentReducer: Reducer<State, A, LocalState> | undefined,
     initialState: Document<State, A, LocalState>,
     onError: OnErrorHandler = console.error,
-): readonly [
-    Document<State, A, LocalState>,
-    DocumentDispatch<State, A, LocalState>,
-    unknown,
-] {
+): readonly [Document<State, A, LocalState>, DocumentDispatch<A>, unknown] {
     const [state, setState] = useState(initialState);
     const [error, setError] = useState<unknown>();
 
@@ -60,7 +48,7 @@ export function useDocumentDispatch<State, A extends Action, LocalState>(
         setState(initialState);
     }, [initialState]);
 
-    const dispatch: DocumentDispatch<State, A, LocalState> = (
+    const dispatch: DocumentDispatch<A> = (
         action,
         callback,
         onErrorCallback?: ActionErrorCallback,
@@ -82,10 +70,7 @@ export function useDocumentDispatch<State, A extends Action, LocalState>(
                     onErrorCallback?.(error);
                 }
 
-                callback?.(operation, {
-                    prevState: { ..._state },
-                    newState: { ...newState },
-                });
+                callback?.(operation);
 
                 return newState;
             } catch (error) {
