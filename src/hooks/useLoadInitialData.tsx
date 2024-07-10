@@ -15,8 +15,9 @@ import { useDocumentDriveServer } from 'src/hooks/useDocumentDriveServer';
 import { useDrivesContainer } from 'src/hooks/useDrivesContainer';
 import { useSelectedPath } from 'src/store/document-drive';
 import { DefaultDocumentDriveServer as server } from 'src/utils/document-drive-server';
+import { useClientErrorHandler } from './useClientErrorHandler';
 import { useDocumentDrives } from './useDocumentDrives';
-import { useLoadDefaultDrive } from './useLoadDefaultDrive';
+import { useLoadDefaultDrives } from './useLoadDefaultDrives';
 import { useNavigateToItemId } from './useNavigateToItemId';
 import { isLatestVersion } from './utils';
 
@@ -34,13 +35,14 @@ export const useLoadInitialData = () => {
     const navigateToItemId = useNavigateToItemId();
     const getItemById = useGetItemById();
     const [, , serverSubscribeUpdates] = useDocumentDrives(server);
+    const clientErrorHandler = useClientErrorHandler();
 
-    useLoadDefaultDrive();
+    useLoadDefaultDrives();
 
     useEffect(() => {
-        const unsubscribe = serverSubscribeUpdates();
+        const unsubscribe = serverSubscribeUpdates(clientErrorHandler);
         return unsubscribe;
-    }, [serverSubscribeUpdates]);
+    }, [serverSubscribeUpdates, documentDrives.length]);
 
     useEffect(() => {
         drives.forEach(drive => {

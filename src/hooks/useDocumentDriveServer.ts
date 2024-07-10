@@ -9,6 +9,7 @@ import {
 import { isDocumentDrive } from 'document-drive/utils';
 import {
     DocumentDriveAction,
+    Trigger,
     actions,
     utils as documentDriveUtils,
     generateAddNodeAction,
@@ -23,6 +24,9 @@ import { DefaultDocumentDriveServer } from 'src/utils/document-drive-server';
 import { loadFile } from 'src/utils/file';
 import { useDocumentDrives } from './useDocumentDrives';
 import { useUserPermissions } from './useUserPermissions';
+
+export const FILE_UPLOAD_OPERATIONS_CHUNK_SIZE =
+    parseInt(import.meta.env.FILE_UPLOAD_OPERATIONS_CHUNK_SIZE as string) || 50;
 
 // TODO this should be added to the document model
 export interface SortOptions {
@@ -123,7 +127,6 @@ export function useDocumentDriveServer(
                 name,
                 parentFolder: parentFolder ?? null,
                 documentType,
-
                 document,
             },
             ['global'],
@@ -149,13 +152,64 @@ export function useDocumentDriveServer(
             throw new Error('User is not allowed to create files');
         }
         const document = await loadFile(file, getDocumentModel);
-        return addDocument(
+
+        // first create the file with the initial state of document
+        const initialDocument: Document = {
+            ...document.initialState,
+            initialState: document.initialState,
+            operations: {
+                global: [],
+                local: [],
+            },
+            clipboard: [],
+        };
+        const fileNode = await addDocument(
             drive,
             name || (typeof file === 'string' ? document.name : file.name),
             document.documentType,
             parentFolder,
-            document,
+            initialDocument,
         );
+
+        // then add all the operations
+        const operationsLimit = FILE_UPLOAD_OPERATIONS_CHUNK_SIZE;
+        for (const operations of Object.values(document.operations)) {
+            for (let i = 0; i < operations.length; i += operationsLimit) {
+                const chunk = operations.slice(i, i + operationsLimit);
+                const operation = chunk.at(-1);
+                if (!operation) {
+                    break;
+                }
+                const { scope } = operation;
+
+                await addOperations(drive, fileNode.id, chunk);
+                await new Promise<void>(resolve =>
+                    server.on('strandUpdate', update => {
+                        const sameScope =
+                            update.documentId === fileNode.id &&
+                            update.scope == scope;
+                        if (!sameScope) {
+                            return;
+                        }
+
+                        // if all pushed operations are found in the strand
+                        // update then moves on to the next chunk
+                        const operationNotFound = chunk.find(
+                            op =>
+                                !update.operations.find(strandOp =>
+                                    op.id
+                                        ? op.id === strandOp.id
+                                        : op.index === strandOp.index &&
+                                          op.hash === strandOp.hash,
+                                ),
+                        );
+                        if (!operationNotFound) {
+                            resolve();
+                        }
+                    }),
+                );
+            }
+        }
     }
 
     async function updateFile(
@@ -469,6 +523,52 @@ export function useDocumentDriveServer(
         await refreshDocumentDrives();
     }
 
+    async function removeTrigger(driveId: string, triggerId: string) {
+        const drive = await _addDriveOperation(
+            driveId,
+            actions.removeTrigger({ triggerId }),
+        );
+
+        const trigger = drive?.state.local.triggers.find(
+            trigger => trigger.id === triggerId,
+        );
+
+        if (trigger) {
+            throw new Error(`There was an error removing trigger ${triggerId}`);
+        }
+    }
+
+    async function registerNewPullResponderTrigger(
+        driveId: string,
+        url: string,
+        options: Pick<RemoteDriveOptions, 'pullFilter' | 'pullInterval'>,
+    ) {
+        const pullResponderTrigger = await server.registerPullResponderTrigger(
+            driveId,
+            url,
+            options,
+        );
+
+        return pullResponderTrigger;
+    }
+
+    async function addTrigger(driveId: string, trigger: Trigger) {
+        const drive = await _addDriveOperation(
+            driveId,
+            actions.addTrigger({ trigger }),
+        );
+
+        const newTrigger = drive?.state.local.triggers.find(
+            trigger => trigger.id === trigger.id,
+        );
+
+        if (!newTrigger) {
+            throw new Error(
+                `There was an error adding the trigger ${trigger.id}`,
+            );
+        }
+    }
+
     return useMemo(
         () => ({
             documentDrives,
@@ -495,7 +595,15 @@ export function useDocumentDriveServer(
             onStrandUpdate,
             onSyncStatus,
             clearStorage,
+            removeTrigger,
+            addTrigger,
+            registerNewPullResponderTrigger,
         }),
-        [documentDrives, documentDrivesStatus],
+        [
+            documentDrives,
+            documentDrivesStatus,
+            isAllowedToCreateDocuments,
+            isAllowedToEditDocuments,
+        ],
     );
 }
