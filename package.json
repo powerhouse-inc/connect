@@ -1,7 +1,7 @@
 {
     "name": "@powerhousedao/connect",
     "productName": "Powerhouse-Connect",
-    "version": "1.0.0-dev.9",
+    "version": "1.0.0-dev.38",
     "description": "Powerhouse Connect",
     "main": ".vite/build/main.js",
     "license": "AGPL-3.0-only",
@@ -93,16 +93,19 @@
         "xvfb-maybe": "^0.2.1"
     },
     "dependencies": {
-        "@powerhousedao/design-system": "1.0.0-alpha.124",
+        "@powerhousedao/design-system": "1.0.0-alpha.147",
         "@sentry/react": "^7.109.0",
+        "@tanstack/react-virtual": "^3.8.1",
         "did-key-creator": "^1.2.0",
-        "document-drive": "1.0.0-alpha.78",
-        "document-model": "1.5.0",
-        "document-model-libs": "1.59.0-arbitrum.8",
+        "doc-arb-stip": "npm:document-model-libs@^1.59.0-arbitrum-stip.14",
+        "document-drive": "^1.0.0-alpha-arb.81",
+        "document-model": "1.7.0",
+        "document-model-libs": "^1.59.0-arbitrum.14",
         "electron-is-dev": "^3.0.1",
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^8.1.0",
         "graphql": "^16.8.1",
+        "history": "^5.3.0",
         "i18next": "^23.7.6",
         "jotai": "^2.1.0",
         "localforage": "^1.10.0",
@@ -115,13 +118,13 @@
         "uuid": "^9.0.1",
         "viem": "^2.8.13"
     },
+    "optionalDependencies": {
+        "@esbuild/linux-x64": "^0.21.4",
+        "@rollup/rollup-linux-x64-musl": "4.14.3"
+    },
     "overrides": {
         "document-drive": {
             "document-model-libs": "doc-arb-ltip"
         }
-    },
-    "optionalDependencies": {
-        "@esbuild/linux-x64": "^0.21.4",
-        "@rollup/rollup-linux-x64-musl": "4.14.3"
     }
 }
