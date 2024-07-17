@@ -53,7 +53,7 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
                             triggerData.url,
                             {
                                 pullInterval:
-                                    Number(triggerData.interval) || 3000,
+                                    Number(triggerData.interval) || 10000,
                             },
                         );
 

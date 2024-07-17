@@ -111,7 +111,7 @@ export const useLoadDefaultDrives = () => {
                         },
                     ],
                     triggers: [],
-                    pullInterval: 3000,
+                    pullInterval: 10000,
                 })
                     .then(() =>
                         setConfig(conf => ({
