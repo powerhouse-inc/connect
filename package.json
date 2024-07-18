@@ -1,7 +1,7 @@
 {
     "name": "@powerhousedao/connect",
     "productName": "Powerhouse-Connect",
-    "version": "1.0.0-dev.33",
+    "version": "1.0.0-dev.44",
     "description": "Powerhouse Connect",
     "main": ".vite/build/main.js",
     "license": "AGPL-3.0-only",
@@ -97,9 +97,9 @@
         "@sentry/react": "^7.109.0",
         "@tanstack/react-virtual": "^3.8.1",
         "did-key-creator": "^1.2.0",
-        "document-drive": "1.0.0-alpha.80",
+        "document-drive": "^1.0.0-alpha.86",
         "document-model": "1.7.0",
-        "document-model-libs": "^1.69.0",
+        "document-model-libs": "^1.70.0",
         "electron-is-dev": "^3.0.1",
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^8.1.0",
@@ -119,6 +119,9 @@
     },
     "optionalDependencies": {
         "@esbuild/linux-x64": "^0.21.4",
-        "@rollup/rollup-linux-x64-musl": "4.14.3"
+        "@esbuild/darwin-arm64": "^0.23.0",
+        "@rollup/rollup-linux-x64-musl": "4.14.3",
+        "@rollup/rollup-darwin-arm64": "4.18.1"
+        
     }
 }
