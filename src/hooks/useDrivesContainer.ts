@@ -25,7 +25,7 @@ import {
 import path from 'path';
 import { useTranslation } from 'react-i18next';
 import { useModal } from 'src/components/modal';
-import { getLastIndexFromPath } from 'src/utils';
+import { getLastIndexFromPath, sortTreeItemsByLabel } from 'src/utils';
 import { v4 as uuid } from 'uuid';
 import { useDocumentDriveServer } from './useDocumentDriveServer';
 import { useNavigateToItemId } from './useNavigateToItemId';
@@ -83,6 +83,9 @@ export function useDrivesContainer() {
         copyNode,
         moveNode,
         getSyncStatus,
+        removeTrigger,
+        addTrigger,
+        registerNewPullResponderTrigger,
     } = useDocumentDriveServer();
 
     function addVirtualNewFolder(item: TreeItem, driveID: string) {
@@ -195,6 +198,45 @@ export function useDrivesContainer() {
                     ...item,
                     action: 'UPDATE_AND_COPY',
                 });
+                break;
+            case 'remove-trigger': {
+                // ONLY AVAILABLE FOR DEBUGGING
+                const triggerId = window.prompt('triggerId:');
+
+                if (triggerId) {
+                    await removeTrigger(decodeID(driveID), triggerId);
+                }
+                break;
+            }
+            case 'add-trigger': {
+                // ONLY AVAILABLE FOR DEBUGGING
+                const url = window.prompt('url') || '';
+
+                const pullResponderTrigger =
+                    await registerNewPullResponderTrigger(
+                        decodeID(driveID),
+                        url,
+                        { pullInterval: 6000 },
+                    );
+                await addTrigger(decodeID(driveID), pullResponderTrigger);
+
+                break;
+            }
+            case 'add-invalid-trigger': {
+                // ONLY AVAILABLE FOR DEBUGGING
+                const url = window.prompt('url') || '';
+
+                await addTrigger(decodeID(driveID), {
+                    id: 'some-invalid-id',
+                    type: 'PullResponder',
+                    data: {
+                        interval: '3000',
+                        listenerId: 'invalid-listener-id',
+                        url,
+                    },
+                });
+                break;
+            }
         }
     };
 
@@ -337,7 +379,11 @@ export function useDrivesContainer() {
             };
         });
 
-        return [driveNode, ...fileItems, ...folderItems];
+        return [
+            driveNode,
+            ...fileItems,
+            ...folderItems.sort(sortTreeItemsByLabel),
+        ];
     }
 
     return {
