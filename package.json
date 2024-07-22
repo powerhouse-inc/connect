@@ -122,5 +122,10 @@
         "@esbuild/linux-x64": "^0.21.4",
         "@rollup/rollup-darwin-arm64": "latest",
         "@rollup/rollup-linux-x64-musl": "4.14.3"
+    },
+    "overrides": {
+        "document-drive": {
+            "document-model-libs": "doc-arb-stip"
+        }
     }
 }
