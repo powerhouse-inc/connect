@@ -1,3 +1,86 @@
+# [1.0.0-dev.44](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.43...v1.0.0-dev.44) (2024-07-17)
+
+
+### Features
+
+* removed file extension when importing a document file ([b2da3b0](https://github.com/powerhouse-inc/document-model-electron/commit/b2da3b05eba3af229a99667c6d454d51aaec3bfd))
+
+# [1.0.0-dev.43](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.42...v1.0.0-dev.43) (2024-07-17)
+
+
+### Features
+
+* added base e2e tests ([fab24e1](https://github.com/powerhouse-inc/document-model-electron/commit/fab24e14247b31a96df09ccc17e7a3d05b065194))
+
+# [1.0.0-dev.42](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.41...v1.0.0-dev.42) (2024-07-11)
+
+
+### Features
+
+* added debug tools modal ([c88989b](https://github.com/powerhouse-inc/document-model-electron/commit/c88989b3b29f501089234dcfc3a03ae94cc6d009))
+
+# [1.0.0-dev.41](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.40...v1.0.0-dev.41) (2024-07-09)
+
+
+### Features
+
+* reload default drives when config has been updated ([edd9bfc](https://github.com/powerhouse-inc/document-model-electron/commit/edd9bfc1f1914c13855343d77b6fc8029df6f737))
+
+# [1.0.0-dev.40](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.39...v1.0.0-dev.40) (2024-07-09)
+
+
+### Bug Fixes
+
+* endpoints for connect ([7c81639](https://github.com/powerhouse-inc/document-model-electron/commit/7c81639f01764ee0703c0a0313305f7557994f06))
+* semantic release ([b24fa8d](https://github.com/powerhouse-inc/document-model-electron/commit/b24fa8d03309c4f2f5d43372a34388dd0a168e59))
+
+
+### Features
+
+* added addpublicdrive util ([4dc536f](https://github.com/powerhouse-inc/document-model-electron/commit/4dc536f82216f47a8db46225ac1f6d6e1f9c7a23))
+* added cypress CI config ([6418f6d](https://github.com/powerhouse-inc/document-model-electron/commit/6418f6d06b8f9d14012ab660a21f0b8b35af008a))
+* added Cypress Cloud Config ([24deddb](https://github.com/powerhouse-inc/document-model-electron/commit/24deddb0518dc49e14538e29045e56eeab735b62))
+* added cypress setup ([380db83](https://github.com/powerhouse-inc/document-model-electron/commit/380db83614f692230bbd11ebff63007599745f0d))
+* added develop environment ([4ceabce](https://github.com/powerhouse-inc/document-model-electron/commit/4ceabce3c8e5d43488abda4a83d524b59da0c338))
+* added develop to release cycle ([3e1058e](https://github.com/powerhouse-inc/document-model-electron/commit/3e1058eac31ac13d74aaed32418d6ac56ad4e3dd))
+* added reload Connect toast ([37cb55e](https://github.com/powerhouse-inc/document-model-electron/commit/37cb55ecf4b746025de9c613d176a250505559c6))
+* added version comparison ([866e979](https://github.com/powerhouse-inc/document-model-electron/commit/866e979684d884528cb06568ee92d02ec1253308))
+* avoid recreate fileOptions and clickOptionsHandler for each file node ([08557e9](https://github.com/powerhouse-inc/document-model-electron/commit/08557e983c663e58a0bb68534b11df579f9be045))
+* avoid recreate folderOptions and clickFolderOptionsHandler for each folder node ([efa90d2](https://github.com/powerhouse-inc/document-model-electron/commit/efa90d2664c025247ae6636a2c06706b12b1ad96))
+* bump libs ([e11a238](https://github.com/powerhouse-inc/document-model-electron/commit/e11a23886304d971c1bf8ae7db92cbbe63c5d185))
+* bump libs ([4e0863a](https://github.com/powerhouse-inc/document-model-electron/commit/4e0863af39e148053154fdcd2cb5ca5f3c801c6b))
+* bump libs ([87d0d1a](https://github.com/powerhouse-inc/document-model-electron/commit/87d0d1af3997d258065bcdf91f7eba74e1e845ae))
+* enabled sync icons for folders and files ([3e0451e](https://github.com/powerhouse-inc/document-model-electron/commit/3e0451e923151a497894c2b282a3324c11be2867))
+* moved isAllowedToCreateDocuments to folderView ([8ef573b](https://github.com/powerhouse-inc/document-model-electron/commit/8ef573bafb079ebf5e32e6611c25d85225fe6190))
+* re-use decodedDriveID ([bb11105](https://github.com/powerhouse-inc/document-model-electron/commit/bb111052681fd6fb73671ad026b16a22c03ec139))
+* removed debug code ([5f0c930](https://github.com/powerhouse-inc/document-model-electron/commit/5f0c930c3c2fb19dfbd46a957fda4655f8549a72))
+* update query ([2e5d77f](https://github.com/powerhouse-inc/document-model-electron/commit/2e5d77fdfd0cab9794563ef70e88954c9b99c73f))
+* updated design-system alpha 119 ([b337897](https://github.com/powerhouse-inc/document-model-electron/commit/b3378976dd6f75b11b028734ad0e4dee09918b33))
+* updated document drive ([39f3218](https://github.com/powerhouse-inc/document-model-electron/commit/39f3218c6919b4fb72a5641733da60b8eeac69c2))
+* updated document-drive ([2a08adb](https://github.com/powerhouse-inc/document-model-electron/commit/2a08adb7fdd6a46af4c8d8ff31c946e043dbb016))
+* updated libs ([adbadc1](https://github.com/powerhouse-inc/document-model-electron/commit/adbadc1d0b826acfc7e112d07d1c478496ac93cb))
+* updated release script ([d5b4fd6](https://github.com/powerhouse-inc/document-model-electron/commit/d5b4fd60008696328dea4bf69b382ed8e1be527e))
+* use memoized version of FileItem component ([8b0314b](https://github.com/powerhouse-inc/document-model-electron/commit/8b0314ba7ef8d538dc680d4a036b9c010a039273))
+
+
+### Performance Improvements
+
+* decode id only one when getting readable item path ([9d0b5ad](https://github.com/powerhouse-inc/document-model-electron/commit/9d0b5ad785a7a7e1c174f3190f87c6ee26f30251))
+* implemented scalable way to compare drive state ([bb5fecb](https://github.com/powerhouse-inc/document-model-electron/commit/bb5fecb8e31385abc5697a4635c2dfb0823ba853))
+
+# [1.0.0-dev.39](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.38...v1.0.0-dev.39) (2024-07-09)
+
+
+### Bug Fixes
+
+* set old drive private and new drive public ([fa29b90](https://github.com/powerhouse-inc/document-model-electron/commit/fa29b9042e764cd58f96073f2967478372b289ce))
+* switchboard graphql query ([8d354d3](https://github.com/powerhouse-inc/document-model-electron/commit/8d354d33b8cf63cf4d2b34800b8ff2a77bb79646))
+
+
+### Features
+
+* readd drive by slug ([631bcc3](https://github.com/powerhouse-inc/document-model-electron/commit/631bcc36fafaa9fe8502820d9ac872563377d32a))
+
 # [1.0.0-dev.38](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.37...v1.0.0-dev.38) (2024-07-08)
 
 
@@ -191,21 +274,107 @@
 
 * remove resulting state from cache ([4d8c6fe](https://github.com/powerhouse-inc/document-model-electron/commit/4d8c6feef417c9254e12a9aac0c58d7769d34d84))
 
-# [1.0.0-dev.13](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.12...v1.0.0-dev.13) (2024-06-21)
-
 
 ### Features
 
 * added virtualization for files content ([f8e9093](https://github.com/powerhouse-inc/document-model-electron/commit/f8e9093d72a8db79338c68220f09a83d4e7ea2be))
+* bump libs ([b3d7fa9](https://github.com/powerhouse-inc/document-model-electron/commit/b3d7fa9e0e9c52b12d5671f3db77425a6b343e9e))
 
-# [1.0.0-dev.12](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.11...v1.0.0-dev.12) (2024-06-21)
+# [1.0.0-next.2](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.1...v1.0.0-next.2) (2024-06-20)
+
+
+### Bug Fixes
+
+* endpoints for connect ([f35f853](https://github.com/powerhouse-inc/document-model-electron/commit/f35f8532e14475e74cc80119e5df0274f2b5f1e7))
+* semantic release ([1ccdf9e](https://github.com/powerhouse-inc/document-model-electron/commit/1ccdf9e6cbcaa9de8c9a51627311f94a032a039a))
 
 
 ### Features
 
-* bump libs ([b3d7fa9](https://github.com/powerhouse-inc/document-model-electron/commit/b3d7fa9e0e9c52b12d5671f3db77425a6b343e9e))
+* added addpublicdrive util ([123ed8b](https://github.com/powerhouse-inc/document-model-electron/commit/123ed8be07321eafcac2521f4ae7452e86a6895f))
+* added cypress CI config ([e50fb06](https://github.com/powerhouse-inc/document-model-electron/commit/e50fb062eccf6387399bad9403f59a20bc478d89))
+* added Cypress Cloud Config ([3439c54](https://github.com/powerhouse-inc/document-model-electron/commit/3439c5493098d66a6e7563068f35afcae255b142))
+* added cypress setup ([be8e1b6](https://github.com/powerhouse-inc/document-model-electron/commit/be8e1b6e702f3f9209d694d5642ee82465a6bb9b))
+* added develop environment ([c33ab9d](https://github.com/powerhouse-inc/document-model-electron/commit/c33ab9d6977712a3015d28a0cd27208f7fd727e5))
+* added develop to release cycle ([b9247e6](https://github.com/powerhouse-inc/document-model-electron/commit/b9247e66d19ffc9400caae9403d9b5b06048eacc))
+* added reload Connect toast ([944b086](https://github.com/powerhouse-inc/document-model-electron/commit/944b0866bf7ca830581a21ed828f81c880891922))
+* added version comparison ([85661ea](https://github.com/powerhouse-inc/document-model-electron/commit/85661eaa9aac0a8f38ce465adf1c0c227a442846))
+* avoid recreate fileOptions and clickOptionsHandler for each file node ([0a0ef3a](https://github.com/powerhouse-inc/document-model-electron/commit/0a0ef3a181489ec91a8c8439f25dcb9f3713f9a9))
+* avoid recreate folderOptions and clickFolderOptionsHandler for each folder node ([6329b29](https://github.com/powerhouse-inc/document-model-electron/commit/6329b291adee5895070f3b2192f84c36c86406a8))
+* bump libs ([e9d7a4f](https://github.com/powerhouse-inc/document-model-electron/commit/e9d7a4f40f16bc9a50d1191d04d4c0d3e8f54ad4))
+* bump libs ([32b2f39](https://github.com/powerhouse-inc/document-model-electron/commit/32b2f390eee0d613b86b4988e970db27077868c3))
+* bump libs ([1216c33](https://github.com/powerhouse-inc/document-model-electron/commit/1216c33f4c713d4c7ac6eeb76725a51a6e6cf9a0))
+* bump libs ([153909c](https://github.com/powerhouse-inc/document-model-electron/commit/153909c5c7e0bc2c97511f9001c1b3e4f7ec5f79))
+* bump libs ([fe4d49a](https://github.com/powerhouse-inc/document-model-electron/commit/fe4d49a4acdccb5a24678ca38b914257599a63b9))
+* enabled sync icons for folders and files ([9336e8a](https://github.com/powerhouse-inc/document-model-electron/commit/9336e8a3d1c818a962b5c0d0ef108ab07c2d3872))
+* handle empty string as parent folder ([3260ccb](https://github.com/powerhouse-inc/document-model-electron/commit/3260ccbcd0b1b4b188a7881d8881fae604bbf8f3))
+* moved isAllowedToCreateDocuments to folderView ([8af8020](https://github.com/powerhouse-inc/document-model-electron/commit/8af8020109d85cd1d6cae167cd51ddf722d2bb46))
+* re-use decodedDriveID ([1a82d60](https://github.com/powerhouse-inc/document-model-electron/commit/1a82d60b5bbfc5f99f99d38e3909da4364325817))
+* removed debug code ([4aa9c4c](https://github.com/powerhouse-inc/document-model-electron/commit/4aa9c4c2fa205a2f2823d2816b64e420efe2cf2a))
+* updated design-system alpha 119 ([c27a968](https://github.com/powerhouse-inc/document-model-electron/commit/c27a968f2bfd745d48a7a69a451d4c18e72acdf9))
+* updated document-drive ([cce5625](https://github.com/powerhouse-inc/document-model-electron/commit/cce5625d5392f3860a2f5b71ad144dd99d98ebda))
+* updated libs ([5edef9d](https://github.com/powerhouse-inc/document-model-electron/commit/5edef9d1d1936f3bb7c9006c180c7a352f8d6bb9))
+* updated release script ([639b2a5](https://github.com/powerhouse-inc/document-model-electron/commit/639b2a50405d32f884f941457702ba12a6fa3a6b))
+* use memoized version of FileItem component ([040c2b6](https://github.com/powerhouse-inc/document-model-electron/commit/040c2b6ca0cdd8c87d313d27169213a50cffb4cd))
 
+<<<<<<< HEAD
 # [1.0.0-dev.11](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.10...v1.0.0-dev.11) (2024-06-19)
+=======
+
+### Performance Improvements
+
+* decode id only one when getting readable item path ([5c019b9](https://github.com/powerhouse-inc/document-model-electron/commit/5c019b951db04c31e8f2f163fd32a4e465eb3264))
+* implemented scalable way to compare drive state ([5b4f360](https://github.com/powerhouse-inc/document-model-electron/commit/5b4f360f9be815e52131f56fedf3f6a97e77ed7f))
+
+# 1.0.0-next.1 (2024-06-18)
+
+
+### Bug Fixes
+
+* added callback support for  document dispatch ([a4f4c04](https://github.com/powerhouse-inc/document-model-electron/commit/a4f4c04ead0d2aca54983da2e79e9ff6e673da15))
+* allow concurrent drive operations ([17658ee](https://github.com/powerhouse-inc/document-model-electron/commit/17658ee1a67dc787896508d25ea329ca9b657a13))
+* apply auto lint fix ([dfa1ec0](https://github.com/powerhouse-inc/document-model-electron/commit/dfa1ec02caddba3e9b06e1a18855f47abf959eda))
+* base hrefs ([1ff517c](https://github.com/powerhouse-inc/document-model-electron/commit/1ff517c31991b6ad836b173c0df916b396f59fe1))
+* base path cmd ([070b4af](https://github.com/powerhouse-inc/document-model-electron/commit/070b4af1a148be00ca8b4e4bf8e24f22adbea28c))
+* build issues ([f2b084b](https://github.com/powerhouse-inc/document-model-electron/commit/f2b084b21a7826c491bc4d5977608892bfedfeba))
+* change config file names in scripts ([37fa872](https://github.com/powerhouse-inc/document-model-electron/commit/37fa872932c8f455e4844e6bd838a65720ad5380))
+* downgraded document drive ([7d287c4](https://github.com/powerhouse-inc/document-model-electron/commit/7d287c4d08d73226e7ba1ec8aabaeeb9a088c8e2))
+* endpoints for connect ([7c81639](https://github.com/powerhouse-inc/document-model-electron/commit/7c81639f01764ee0703c0a0313305f7557994f06))
+* fix file types ([11d1b18](https://github.com/powerhouse-inc/document-model-electron/commit/11d1b1833442ee302196b3e50f73f0380a372507))
+* fix rerenders when refreshing document drives ([5429f61](https://github.com/powerhouse-inc/document-model-electron/commit/5429f613784535e430809b751d879e60b2f5fb68))
+* fixed build error ([3027483](https://github.com/powerhouse-inc/document-model-electron/commit/30274832089143d616c3c55935735ad6f275e8c2))
+* fixed build error ([f280459](https://github.com/powerhouse-inc/document-model-electron/commit/f2804594d3f764477c06fc4183a2427df9e4c86b))
+* folder selection in folder view ([f7e3681](https://github.com/powerhouse-inc/document-model-electron/commit/f7e36810b5d0223afc64736a9e8ec48e11f7fc57))
+* header text color ([4ee9745](https://github.com/powerhouse-inc/document-model-electron/commit/4ee9745dbbeddf0e2ea41f6d8c4c800d9f5bfd99))
+* heroku nginx config ([0ca0df1](https://github.com/powerhouse-inc/document-model-electron/commit/0ca0df1e853522fb0d21ded35d6f61964c48ea62))
+* lint errors ([ac490b4](https://github.com/powerhouse-inc/document-model-electron/commit/ac490b4cdf693d62d57a865b55952ca7b46bfe94))
+* missing return ([f81d0e9](https://github.com/powerhouse-inc/document-model-electron/commit/f81d0e9a0a58c4079a6359d0dc45f90861d4acb4))
+* only call useMemo in hook ([76a1505](https://github.com/powerhouse-inc/document-model-electron/commit/76a15059e825ec0e1d6215e450ec0339d7c33bbe))
+* package.lock ([1c2a1f5](https://github.com/powerhouse-inc/document-model-electron/commit/1c2a1f55bf33953fa1834da2e84dcc0e93710c7b))
+* properly encode switchboard query ([4c5001f](https://github.com/powerhouse-inc/document-model-electron/commit/4c5001fb3aa34249bee0550331a314872b05c614))
+* remove allow list ([ac2475d](https://github.com/powerhouse-inc/document-model-electron/commit/ac2475d866195b18b23ca094457ccce93b9b0508))
+* remove duplicate package ([364afdd](https://github.com/powerhouse-inc/document-model-electron/commit/364afdde2e2c9c3d6c12d0364e6d0cfd612f5429))
+* remove yalc from package json ([9e184d8](https://github.com/powerhouse-inc/document-model-electron/commit/9e184d8df68d74803e9cbf95f7cf480f97a6d03e))
+* removed unused css import ([6da080c](https://github.com/powerhouse-inc/document-model-electron/commit/6da080c53ea57352b997de941fc303f11a5d2a42))
+* rename node id ([45235e5](https://github.com/powerhouse-inc/document-model-electron/commit/45235e516ce5ea52345c7ff9d1f7238ff4e9e095))
+* renown endpoint ([10461f5](https://github.com/powerhouse-inc/document-model-electron/commit/10461f566fd49a8fd79b23fdaa66871d8d8cff76))
+* renown login ([432e5bc](https://github.com/powerhouse-inc/document-model-electron/commit/432e5bcc1eaa13a043720b0c9d1165222188ecfc))
+* revert setSelectedDocument in addOperation document ([df06317](https://github.com/powerhouse-inc/document-model-electron/commit/df06317cc067b3f25deedb9832c1aa54d308158a))
+* rwa query ([09fcd52](https://github.com/powerhouse-inc/document-model-electron/commit/09fcd52fdf4adbeee9f6a6aa26c1d0309b525510))
+* semantic release ([b24fa8d](https://github.com/powerhouse-inc/document-model-electron/commit/b24fa8d03309c4f2f5d43372a34388dd0a168e59))
+* settings modal typo ([6ef1286](https://github.com/powerhouse-inc/document-model-electron/commit/6ef12861fdda344c7c45f54657b6f56c67217162))
+* show local drives ([893b0df](https://github.com/powerhouse-inc/document-model-electron/commit/893b0dfe9d8004b12114842b082e4672a630aa38))
+* subscribe to server updates when load initial data ([35bf948](https://github.com/powerhouse-inc/document-model-electron/commit/35bf948de2acb3a23684060c978138f2b5ad5f75))
+* suppress less important rules ([679af22](https://github.com/powerhouse-inc/document-model-electron/commit/679af2256b8e6a4739006048056d452ba7fbf988))
+* switchboard endpoint ([2e570f3](https://github.com/powerhouse-inc/document-model-electron/commit/2e570f39bc355e4f387c0d371e8af81a0b92bb38))
+* switchboard link ([78bbdd0](https://github.com/powerhouse-inc/document-model-electron/commit/78bbdd0ec278a7685023cf9482d5990f6cf18a6d))
+* tmp build fix ([4a4be40](https://github.com/powerhouse-inc/document-model-electron/commit/4a4be4098131a946ce919792e3028e0f4e92c46e))
+* undefined default drive ([e5f2749](https://github.com/powerhouse-inc/document-model-electron/commit/e5f27494a57a29c4e4ae921d2014198af8614df3))
+* undefined default drive ([6ad9412](https://github.com/powerhouse-inc/document-model-electron/commit/6ad94127e15ebb43507cd0cae8404e9e2bc17e5b))
+* update selectedDocument when a new operation is dispatched ([b2c4401](https://github.com/powerhouse-inc/document-model-electron/commit/b2c4401c676d1c2621334375f132c6367c234ca5))
+* use selectedDocument as source of truth for document editor ([b5204e7](https://github.com/powerhouse-inc/document-model-electron/commit/b5204e7153028459ef3ace07e719736d971d577a))
+* wait for renown to load ([1d2f019](https://github.com/powerhouse-inc/document-model-electron/commit/1d2f019dc992239873e19e35fe8d5c0dde1396f5))
+>>>>>>> develop
 
 
 ### Features

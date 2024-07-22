@@ -5,6 +5,7 @@ import {
 } from 'document-model-libs/document-drive';
 import { useCallback, useRef, useState } from 'react';
 import { useDocumentDriveServer } from './useDocumentDriveServer';
+import { useSwitchboard } from './useSwitchboard';
 
 export type ClientErrorHandler = {
     strandsErrorHandler: (
@@ -30,8 +31,17 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
     const [pullResponderTriggerMap, setPullResponderTriggerMap] = useState<
         Map<string, PullResponderTrigger>
     >(new Map());
-    const { addTrigger, removeTrigger, registerNewPullResponderTrigger } =
-        useDocumentDriveServer();
+    const {
+        addTrigger,
+        removeTrigger,
+        registerNewPullResponderTrigger,
+        renameDrive,
+        addRemoteDrive,
+        documentDrives,
+        setDriveSharingType,
+    } = useDocumentDriveServer();
+
+    const { getDriveIdBySlug } = useSwitchboard();
 
     const pullResponderRegisterDelay = useRef<Map<string, number>>(new Map());
 
@@ -92,6 +102,59 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
         ],
     );
 
+    const handleDriveNotFound = useCallback(
+        async (driveId: string, trigger: Trigger, handlerCode: string) => {
+            setHandlingInProgress(state => [...state, handlerCode]);
+            try {
+                // get local drive by id
+                const drive = documentDrives.find(
+                    drive => drive.state.global.id === driveId,
+                );
+                if (!drive) return;
+                await removeTrigger(driveId, trigger.id);
+
+                await renameDrive(
+                    driveId,
+                    drive.state.global.name + ` (${drive.state.global.id})`,
+                );
+
+                await setDriveSharingType(driveId, 'PRIVATE');
+
+                if (trigger.data?.url && drive.state.global.slug) {
+                    const newId = await getDriveIdBySlug(
+                        trigger.data.url,
+                        drive.state.global.slug,
+                    );
+                    if (newId) {
+                        const urlParts = trigger.data.url.split('/');
+                        urlParts[urlParts.length - 1] = newId;
+                        const newUrl = urlParts.join('/');
+
+                        await addRemoteDrive(newUrl, {
+                            availableOffline: true,
+                            sharingType: 'PUBLIC',
+                            listeners: [],
+                            triggers: [],
+                        });
+                    }
+                }
+            } catch (e: any) {
+                console.error(e);
+            } finally {
+                setHandlingInProgress(state =>
+                    state.filter(code => code !== handlerCode),
+                );
+            }
+        },
+        [
+            pullResponderTriggerMap,
+            removeTrigger,
+            addTrigger,
+            pullResponderRegisterDelay,
+            registerNewPullResponderTrigger,
+        ],
+    );
+
     const strandsErrorHandler: ClientErrorHandler['strandsErrorHandler'] =
         async (driveId, trigger, status, errorMessage) => {
             switch (status) {
@@ -102,6 +165,12 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
                             trigger.data?.listenerId,
                         )
                     ) {
+                        const autoRegisterPullResponder =
+                            localStorage.getItem(
+                                'AUTO_REGISTER_PULL_RESPONDER',
+                            ) !== 'false';
+
+                        if (!autoRegisterPullResponder) return;
                         const handlerCode = `strands:${driveId}:${status}`;
 
                         if (handlingInProgress.includes(handlerCode)) return;
@@ -119,6 +188,17 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
                         );
                     }
 
+                    break;
+                }
+
+                case 404: {
+                    const handlerCode = `strands:${driveId}:${status}`;
+                    if (handlingInProgress.includes(handlerCode)) return;
+                    setTimeout(
+                        () =>
+                            handleDriveNotFound(driveId, trigger, handlerCode),
+                        0,
+                    );
                     break;
                 }
             }
