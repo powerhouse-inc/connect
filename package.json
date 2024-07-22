@@ -97,7 +97,7 @@
         "@sentry/react": "^7.109.0",
         "@tanstack/react-virtual": "^3.8.1",
         "did-key-creator": "^1.2.0",
-        "document-drive": "arb-alpha",
+        "document-drive": "^1.0.0-alpha-arb.90",
         "document-model": "1.7.0",
         "document-model-libs": "doc-arb-stip",
         "electron-is-dev": "^3.0.1",
@@ -118,7 +118,9 @@
         "viem": "^2.8.13"
     },
     "optionalDependencies": {
+        "@esbuild/darwin-arm64": "latest",
         "@esbuild/linux-x64": "^0.21.4",
+        "@rollup/rollup-darwin-arm64": "latest",
         "@rollup/rollup-linux-x64-musl": "4.14.3"
     }
 }
