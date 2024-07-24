@@ -332,6 +332,7 @@ const Content = () => {
                                 );
                                 setSelectedFileNode(undefined);
                             }}
+                            fileId={selectedFileNode.id}
                             onChange={onDocumentChangeHandler}
                             onExport={() => exportDocument(selectedDocument)}
                             onAddOperation={handleAddOperation}
