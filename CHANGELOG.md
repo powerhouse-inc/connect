@@ -1,3 +1,10 @@
+# [1.0.0-next.5](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.4...v1.0.0-next.5) (2024-07-30)
+
+
+### Bug Fixes
+
+* renown env var ([0b6bb86](https://github.com/powerhouse-inc/document-model-electron/commit/0b6bb86c10a525462f45db82a1cd5607b16a88be))
+
 # [1.0.0-next.4](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.3...v1.0.0-next.4) (2024-07-01)
 
 
