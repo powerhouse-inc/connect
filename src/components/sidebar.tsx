@@ -23,6 +23,8 @@ export default function Sidebar() {
 
     const { user, openRenown, status } = useLogin();
 
+    const connectDebug = localStorage.getItem('CONNECT_DEBUG') === 'true';
+
     function toggleCollapse() {
         setCollapsed(value => !value);
     }
@@ -34,11 +36,21 @@ export default function Sidebar() {
     const headerContent = (
         <div className="flex h-full items-center">
             <Icon name="connect" className="!h-[30px] !w-[100px]" />
+            {connectDebug && (
+                <button
+                    id="connect-debug-button"
+                    className="ml-6"
+                    onClick={() => showModal('debugSettingsModal', {})}
+                >
+                    <img src="settings.png" className="h-5 text-gray-600" />
+                </button>
+            )}
         </div>
     );
 
     return (
         <ConnectSidebar
+            id="sidebar"
             collapsed={collapsed}
             onToggle={toggleCollapse}
             onClickSettings={onClickSettings}
