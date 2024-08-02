@@ -72,6 +72,9 @@ FROM macbre/nginx-brotli:latest AS runner
 
 ARG X_TAG
 WORKDIR /opt/app
+
+ARG PORT=80
+ENV PORT=${PORT}
 ENV NODE_ENV=production
 ARG BASE_PATH="/alpha/powerhouse/connect"
 ENV BASE_PATH=${BASE_PATH}
