@@ -37,7 +37,7 @@ export default (
                 .then(drives => {
                     if (
                         !drives.length &&
-                        connectConfig.drives.sections.local.enabled
+                        connectConfig.drives.sections.LOCAL.enabled
                     ) {
                         documentDrive
                             .addDrive({
@@ -175,6 +175,16 @@ export default (
 
     ipcMain.handle('documentDrive:getSyncStatus', (_e, drive: string) =>
         documentDrive.getSyncStatus(drive),
+    );
+
+    ipcMain.handle(
+        'documentDrive:registerPullResponderTrigger',
+        (
+            _e,
+            drive: string,
+            url: string,
+            options: Pick<RemoteDriveOptions, 'pullFilter' | 'pullInterval'>,
+        ) => documentDrive.registerPullResponderTrigger(drive, url, options),
     );
 
     function bindEvents(drive: DocumentDriveServer) {

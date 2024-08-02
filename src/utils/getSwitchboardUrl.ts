@@ -1,56 +1,56 @@
 const rwaQuery = `... on RealWorldAssets {
-  state {
-      portfolio {
-          __typename
-          ... on FixedIncome {
-              name
-              CUSIP
-              purchaseDate
-              purchasePrice
-              purchaseProceeds
-              salesProceeds
-              totalDiscount
-              spvId
-          }
-          ... on Cash {
-              id
-              balance
-          }
-      }
-      transactions {
-          id
-          type
-          entryTime
-          cashBalanceChange
-          fees {
-              id
-              serviceProviderFeeTypeId
-              amount
-          }
-          txRef
-          cashTransaction {
-              id
-              assetId
-              amount
-              entryTime
-              tradeTime
-              settlementTime
-              accountId
-              counterPartyAccountId
-          }
-          fixedIncomeTransaction {
-              id
-              assetId
-              amount
-              entryTime
-              tradeTime
-              settlementTime
-              accountId
-              counterPartyAccountId
-          }
-      }
-  }
-}`;
+        state {
+            portfolio {
+                __typename
+                ... on FixedIncome {
+                    name
+                    CUSIP
+                    purchaseDate
+                    purchasePrice
+                    purchaseProceeds
+                    salesProceeds
+                    totalDiscount
+                    spvId
+                }
+                ... on Cash {
+                    id
+                    balance
+                }
+            }
+            transactions {
+                id
+                type
+                entryTime
+                cashBalanceChange
+                fees {
+                    id
+                    serviceProviderFeeTypeId
+                    amount
+                }
+                txRef
+                cashTransaction {
+                    id
+                    assetId
+                    amount
+                    entryTime
+                    tradeTime
+                    settlementTime
+                    accountId
+                    counterPartyAccountId
+                }
+                fixedIncomeTransaction {
+                    id
+                    assetId
+                    amount
+                    entryTime
+                    tradeTime
+                    settlementTime
+                    accountId
+                    counterPartyAccountId
+                }
+            }
+        }
+    }`;
 
 const accountSnapshot = `... on AccountSnapshot {
     state {

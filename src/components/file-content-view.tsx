@@ -1,46 +1,67 @@
-import {
-    ConnectDropdownMenuItem,
-    TreeItem,
-} from '@powerhousedao/design-system';
+import { FileItem, UiFileNode } from '@powerhousedao/design-system';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { VariableSizeGrid as Grid } from 'react-window';
-import { FileItem } from 'src/components/file-item';
+import { UiNodes } from 'src/hooks/useUiNodes';
+import { useWindowSize } from 'src/hooks/useWindowSize';
 
-import { SetIsWriteMode } from 'src/hooks/useFileOptions';
-
-interface IProps {
-    decodedDriveID: string;
-    onFileSelected: (drive: string, id: string) => void;
-    onFileDeleted: (drive: string, id: string) => void;
-
-    files: TreeItem[];
-    fileItemOptions: ConnectDropdownMenuItem[];
-    isAllowedToCreateDocuments: boolean;
-    onFileOptionsClick: (
-        optionId: string,
-        fileNode: TreeItem,
-        setIsWriteMode: SetIsWriteMode,
-    ) => Promise<void>;
-}
+type Props = UiNodes & {
+    fileNodes: UiFileNode[];
+};
 
 const GAP = 8;
 const ITEM_WIDTH = 256;
 const ITEM_HEIGHT = 48;
 
-export const FileContentView: React.FC<IProps> = ({
-    decodedDriveID,
-    onFileDeleted,
-    onFileSelected,
+const USED_SPACE = 420;
 
-    files,
-    fileItemOptions,
-    onFileOptionsClick,
-    isAllowedToCreateDocuments,
-}) => {
+export function FileContentView(props: Props) {
+    const parentRef = useRef(null);
     const { t } = useTranslation();
+    const windowSize = useWindowSize();
+    const { fileNodes } = props;
+    const availableWidth = windowSize.innerWidth - USED_SPACE;
 
-    if (files.length < 1) {
+    const columnCount = Math.floor(availableWidth / (ITEM_WIDTH + GAP)) || 1;
+    const rowCount = Math.ceil(fileNodes.length / columnCount);
+
+    const rowVirtualizer = useVirtualizer({
+        count: rowCount,
+        getScrollElement: () => parentRef.current,
+        estimateSize: index => {
+            if (index > 0) {
+                return ITEM_HEIGHT + GAP;
+            }
+            return ITEM_HEIGHT;
+        },
+        overscan: 5,
+    });
+
+    const columnVirtualizer = useVirtualizer({
+        horizontal: true,
+        count: columnCount,
+        getScrollElement: () => parentRef.current,
+        estimateSize: index => {
+            if (index > 0) {
+                return ITEM_WIDTH + GAP;
+            }
+            return ITEM_WIDTH;
+        },
+        overscan: 5,
+    });
+
+    const getItemIndex = (rowIndex: number, columnIndex: number) =>
+        rowIndex * columnCount + columnIndex;
+
+    const getItem = (
+        rowIndex: number,
+        columnIndex: number,
+    ): UiFileNode | null => {
+        const index = getItemIndex(rowIndex, columnIndex);
+        return fileNodes[index] || null;
+    };
+
+    if (fileNodes.length === 0) {
         return (
             <div className="mb-8 text-sm text-gray-400">
                 {t('folderView.sections.documents.empty')}
@@ -48,64 +69,69 @@ export const FileContentView: React.FC<IProps> = ({
         );
     }
 
+    const renderItem = (rowIndex: number, columnIndex: number) => {
+        const fileNode = getItem(rowIndex, columnIndex);
+
+        if (!fileNode) {
+            return null;
+        }
+
+        return (
+            <div
+                style={{
+                    marginLeft: columnIndex === 0 ? 0 : GAP,
+                }}
+            >
+                <FileItem {...props} key={fileNode.id} uiNode={fileNode} />
+            </div>
+        );
+    };
+
     return (
-        <AutoSizer>
-            {({ height, width }) => {
-                const columnCount = Math.floor(width / (ITEM_WIDTH + GAP)) || 1;
-                const rowCount = Math.ceil(files.length / columnCount);
-
-                return (
-                    <Grid
-                        width={width}
-                        height={height}
-                        columnCount={columnCount}
-                        columnWidth={index =>
-                            index === columnCount - 1
-                                ? ITEM_WIDTH
-                                : ITEM_WIDTH + GAP
-                        }
-                        rowHeight={index =>
-                            index === rowCount ? ITEM_HEIGHT : ITEM_HEIGHT + GAP
-                        }
-                        rowCount={rowCount}
-                    >
-                        {({ columnIndex, rowIndex, style }) => {
-                            const itemIndex =
-                                rowIndex * columnCount + columnIndex;
-                            const file = files[itemIndex] || null;
-
-                            if (!file) return null;
-
-                            return (
+        <div
+            ref={parentRef}
+            style={{
+                height: `400px`,
+                width: `100%`,
+                overflow: 'auto',
+            }}
+        >
+            <div
+                style={{
+                    height: `${rowVirtualizer.getTotalSize()}px`,
+                    width: `${columnVirtualizer.getTotalSize()}px`,
+                    position: 'relative',
+                }}
+            >
+                {rowVirtualizer.getVirtualItems().map(virtualRow => (
+                    <React.Fragment key={virtualRow.key}>
+                        {columnVirtualizer
+                            .getVirtualItems()
+                            .map(virtualColumn => (
                                 <div
+                                    key={virtualColumn.key}
                                     style={{
-                                        ...style,
-                                        marginRight:
-                                            columnIndex === columnCount - 1
-                                                ? 0
-                                                : GAP,
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        marginTop:
+                                            virtualRow.index === 0 ? 0 : GAP,
+                                        width: `${virtualColumn.size}px`,
+                                        height: `${virtualRow.size}px`,
+                                        transform: `translateX(${virtualColumn.start}px) translateY(${virtualRow.start}px)`,
                                     }}
                                 >
-                                    <FileItem
-                                        key={file.id}
-                                        file={file}
-                                        decodedDriveID={decodedDriveID}
-                                        onFileDeleted={onFileDeleted}
-                                        onFileSelected={onFileSelected}
-                                        itemOptions={fileItemOptions}
-                                        onFileOptionsClick={onFileOptionsClick}
-                                        isAllowedToCreateDocuments={
-                                            isAllowedToCreateDocuments
-                                        }
-                                    />
+                                    {renderItem(
+                                        virtualRow.index,
+                                        virtualColumn.index,
+                                    )}
                                 </div>
-                            );
-                        }}
-                    </Grid>
-                );
-            }}
-        </AutoSizer>
+                            ))}
+                    </React.Fragment>
+                ))}
+            </div>
+        </div>
     );
-};
+}
 
 export default FileContentView;

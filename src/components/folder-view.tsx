@@ -1,71 +1,52 @@
-import { TreeItem, useDraggableTarget } from '@powerhousedao/design-system';
+import {
+    FILE,
+    FOLDER,
+    FolderItem,
+    useDrop,
+} from '@powerhousedao/design-system';
 import { useTranslation } from 'react-i18next';
-import { useUserPermissions } from 'src/hooks/useUserPermissions';
-
-import { useFileOptions } from 'src/hooks/useFileOptions';
-import { useFolderContent } from 'src/hooks/useFolderContent';
-import { useFolderOptions } from 'src/hooks/useFolderOptions';
-import { useOnDropEvent } from 'src/hooks/useOnDropEvent';
+import { UiNodes } from 'src/hooks/useUiNodes';
+import { sortUiNodesByName } from 'src/utils';
 import { twMerge } from 'tailwind-merge';
 import { ContentSection } from './content';
 import FileContentView from './file-content-view';
-import { FolderItem } from './folder-item';
 
-interface IProps {
-    decodedDriveID: string;
-    path: string;
-    folderItem: TreeItem;
-    onFolderSelected: (itemId: string) => void;
-    onFileSelected: (drive: string, id: string) => void;
-    onFileDeleted: (drive: string, id: string) => void;
-}
-
-export const FolderView: React.FC<IProps> = ({
-    path,
-    folderItem,
-    decodedDriveID,
-    onFileDeleted,
-    onFileSelected,
-    onFolderSelected,
-}) => {
+export function FolderView(props: UiNodes) {
     const { t } = useTranslation();
-    const { folders, files } = useFolderContent(path);
-    const { isAllowedToCreateDocuments } = useUserPermissions();
-    const { folderItemOptions, onFolderOptionsClick } =
-        useFolderOptions(decodedDriveID);
-    const { fileItemOptions, onFileOptionsClick } =
-        useFileOptions(decodedDriveID);
-    const onDropEvent = useOnDropEvent();
-
-    const { dropProps, isDropTarget } = useDraggableTarget({
-        data: folderItem,
-        onDropEvent,
+    const { selectedParentNode } = props;
+    const { isDropTarget, dropProps } = useDrop({
+        ...props,
+        uiNode: selectedParentNode,
     });
+
+    const folderNodes =
+        selectedParentNode?.children
+            .filter(node => node.kind === FOLDER)
+            .sort(sortUiNodesByName) ?? [];
+
+    const fileNodes =
+        selectedParentNode?.children
+            .filter(node => node.kind === FILE)
+            .sort(sortUiNodesByName) ?? [];
 
     return (
         <div
             {...dropProps}
             className={twMerge(
-                'rounded-md border-2 border-dashed border-transparent p-2',
-                isDropTarget && 'border-blue-100',
+                'rounded-md border-2 border-transparent p-2',
+                isDropTarget && 'border-dashed border-blue-100',
             )}
         >
             <ContentSection
                 title={t('folderView.sections.folders.title')}
                 className="mb-4"
             >
-                {folders.length > 0 ? (
-                    folders.map(folder => (
+                {folderNodes.length > 0 ? (
+                    folderNodes.map(folderNode => (
                         <FolderItem
-                            key={folder.id}
-                            folder={folder}
-                            decodedDriveID={decodedDriveID}
-                            onFolderSelected={onFolderSelected}
-                            folderItemOptions={folderItemOptions}
-                            onFolderOptionsClick={onFolderOptionsClick}
-                            isAllowedToCreateDocuments={
-                                isAllowedToCreateDocuments
-                            }
+                            {...props}
+                            key={folderNode.id}
+                            uiNode={folderNode}
                         />
                     ))
                 ) : (
@@ -79,22 +60,14 @@ export const FolderView: React.FC<IProps> = ({
                     // eslint-disable-next-line tailwindcss/no-arbitrary-value
                     className={twMerge(
                         'w-full',
-                        files.length > 0 ? 'min-h-[400px]' : 'min-h-14',
+                        fileNodes.length > 0 ? 'min-h-[400px]' : 'min-h-14',
                     )}
                 >
-                    <FileContentView
-                        files={files}
-                        onFileDeleted={onFileDeleted}
-                        decodedDriveID={decodedDriveID}
-                        onFileSelected={onFileSelected}
-                        fileItemOptions={fileItemOptions}
-                        onFileOptionsClick={onFileOptionsClick}
-                        isAllowedToCreateDocuments={isAllowedToCreateDocuments}
-                    />
+                    <FileContentView {...props} fileNodes={fileNodes} />
                 </div>
             </ContentSection>
         </div>
     );
-};
+}
 
 export default FolderView;
