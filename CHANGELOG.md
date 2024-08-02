@@ -1,3 +1,111 @@
+# [1.0.0-next.5](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.4...v1.0.0-next.5) (2024-07-30)
+
+
+### Bug Fixes
+
+* renown env var ([0b6bb86](https://github.com/powerhouse-inc/document-model-electron/commit/0b6bb86c10a525462f45db82a1cd5607b16a88be))
+
+# [1.0.0-next.4](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.3...v1.0.0-next.4) (2024-07-01)
+
+
+### Features
+
+* bump libs ([67c43fe](https://github.com/powerhouse-inc/document-model-electron/commit/67c43fe7257f9bd5890f89105417ed193353491e))
+
+# [1.0.0-dev.54](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.53...v1.0.0-dev.54) (2024-08-01)
+
+
+### Features
+
+* outdated app check improvements ([800b4b2](https://github.com/powerhouse-inc/document-model-electron/commit/800b4b25952417f7ecfdd78ecf3db291776d14a9))
+
+# [1.0.0-dev.53](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.52...v1.0.0-dev.53) (2024-08-01)
+
+
+### Features
+
+* add animated loader for editors ([0ef0cc5](https://github.com/powerhouse-inc/document-model-electron/commit/0ef0cc587bb04d3fa65a4fd133c4c42f5998c92c))
+
+# [1.0.0-dev.52](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.51...v1.0.0-dev.52) (2024-08-01)
+
+
+### Features
+
+* add suspense for editor component ([62f78e7](https://github.com/powerhouse-inc/document-model-electron/commit/62f78e7b2288c4ce346c9bcfde638c9fc943145f))
+* expect undefined document ([d10ef75](https://github.com/powerhouse-inc/document-model-electron/commit/d10ef751d363f56dce29626ec8fbcc7d38fe945a))
+* handle async editor switching ([453939b](https://github.com/powerhouse-inc/document-model-electron/commit/453939bdb2f110dca48a61e91707aaee3eeb9b9d))
+* remove old store tabs ([816406e](https://github.com/powerhouse-inc/document-model-electron/commit/816406e8a04a48ac3dc659a8274162693f4d735f))
+
+# [1.0.0-dev.51](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.50...v1.0.0-dev.51) (2024-07-31)
+
+
+### Features
+
+* remove copy icons script ([23a309a](https://github.com/powerhouse-inc/document-model-electron/commit/23a309a181711bc150c65ee931138f0ba822de0a))
+
+# [1.0.0-dev.50](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.49...v1.0.0-dev.50) (2024-07-31)
+
+
+### Features
+
+* bump document-model-libs ([9f5516c](https://github.com/powerhouse-inc/document-model-electron/commit/9f5516c502769a4056e36d92187595c0ea53ea33))
+* include copy and move handlers ([3b1342f](https://github.com/powerhouse-inc/document-model-electron/commit/3b1342f4ceb9c07eb1e1175daeb4647fde1d8792))
+* only copy icons post install ([9866258](https://github.com/powerhouse-inc/document-model-electron/commit/9866258f1da336e3161232e279b68bbaf7c901b0))
+* remove old tabs ([8a7f62d](https://github.com/powerhouse-inc/document-model-electron/commit/8a7f62dd4e6f2145f0f86fd3652a63645624e5da))
+* remove react aria drag and drop ([80e0353](https://github.com/powerhouse-inc/document-model-electron/commit/80e035328daa59c423cde9199887df11b54b0934))
+* update node lifecycle scripts ([e959228](https://github.com/powerhouse-inc/document-model-electron/commit/e959228254441df256a4477812b941623c64feea))
+
+# [1.0.0-dev.49](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.48...v1.0.0-dev.49) (2024-07-30)
+
+
+### Features
+
+* regenerate lockfile ([b88daf9](https://github.com/powerhouse-inc/document-model-electron/commit/b88daf91e491729e7b25e4e490293be0fa57cd63))
+
+# [1.0.0-dev.48](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.47...v1.0.0-dev.48) (2024-07-30)
+
+
+### Features
+
+* bump design system ([5870d52](https://github.com/powerhouse-inc/document-model-electron/commit/5870d5285014f3ee721af522c042a06cc8b18d51))
+
+# [1.0.0-dev.47](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.46...v1.0.0-dev.47) (2024-07-29)
+
+
+### Features
+
+* add comments ([a5e81b2](https://github.com/powerhouse-inc/document-model-electron/commit/a5e81b22b1d634548a6323ef5b4a5efa2b0a87ec))
+* add node slugs ([e6a538a](https://github.com/powerhouse-inc/document-model-electron/commit/e6a538a39d00ad7c5fa9873805ae8532ac009259))
+* bump libs ([977b43f](https://github.com/powerhouse-inc/document-model-electron/commit/977b43ff4611b34de8591047393f5fc328e80029))
+* handle delete ([d541580](https://github.com/powerhouse-inc/document-model-electron/commit/d5415807add427e013d71df4cd7754618c423e22))
+* handle drive id change is history ([07c9aeb](https://github.com/powerhouse-inc/document-model-electron/commit/07c9aeb41d345ef4435044352b9d4f417f7e98ff))
+* handle history stack ([c1fb104](https://github.com/powerhouse-inc/document-model-electron/commit/c1fb104bbbe4c8cde3277d62f27348b66b249123))
+* handle modal opening ([9404452](https://github.com/powerhouse-inc/document-model-electron/commit/9404452521f66177c859ebcf3fdea1ef5ad8002a))
+* handle url navigation ([fe18c02](https://github.com/powerhouse-inc/document-model-electron/commit/fe18c02cd3a3c795f87a0f7b90fb3ecb21b0ee4c))
+* move modals out of components ([300d094](https://github.com/powerhouse-inc/document-model-electron/commit/300d0947f54eb1893601542c26bb780767356cde))
+* readd drive error handler ([42b647b](https://github.com/powerhouse-inc/document-model-electron/commit/42b647bd570caf94f66bcff9fcaae4368ecc3f42))
+* remove selected node check ([0803390](https://github.com/powerhouse-inc/document-model-electron/commit/0803390c9281bb7c30c9908fca8fffeb55bcb034))
+* rename hook for clarity ([f48848e](https://github.com/powerhouse-inc/document-model-electron/commit/f48848e269c6a3c494b447097994d34e350d99c9))
+* simplify passing of props ([c7c3779](https://github.com/powerhouse-inc/document-model-electron/commit/c7c377933fe83e2612c97194de3d8a22eb1e579c))
+* split navigation functions out of hooks ([7be8044](https://github.com/powerhouse-inc/document-model-electron/commit/7be8044978c50f2691121b9e92df4110ef95e906))
+* use function for slug ([f107e92](https://github.com/powerhouse-inc/document-model-electron/commit/f107e92cff8e8a302abfa8c3822c9385de79c4ac))
+* use new ui nodes context ([fa5dba4](https://github.com/powerhouse-inc/document-model-electron/commit/fa5dba456879cca391f40fbf4d1a6aaa4e2bfeef))
+* use src name in copy ([409cff0](https://github.com/powerhouse-inc/document-model-electron/commit/409cff0dd75cd827e3103acd8d22a4a6a117d66f))
+
+# [1.0.0-dev.46](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.45...v1.0.0-dev.46) (2024-07-26)
+
+
+### Features
+
+* fix merge conflict when adding a new pullResponder ([6941c0a](https://github.com/powerhouse-inc/document-model-electron/commit/6941c0a836cd43aca631b626f2312957a201ca50))
+
+# [1.0.0-dev.45](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.44...v1.0.0-dev.45) (2024-07-22)
+
+
+### Features
+
+* ignore AbortError when user cancels file picker ([9c3cf4d](https://github.com/powerhouse-inc/document-model-electron/commit/9c3cf4d47b1d28442b21c491e7443c48969b5140))
+
 # [1.0.0-dev.44](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.43...v1.0.0-dev.44) (2024-07-17)
 
 
