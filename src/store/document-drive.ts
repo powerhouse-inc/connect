@@ -1,44 +1,7 @@
-import { decodeID, getRootPath } from '@powerhousedao/design-system';
+import { FILE, TUiNodesContext } from '@powerhousedao/design-system';
 import { Document, Operation } from 'document-model/document';
-import { atom, useAtom } from 'jotai';
-import { useEffect, useMemo, useState } from 'react';
-import { useDocumentDriveServer } from 'src/hooks/useDocumentDriveServer';
-
-export const selectedPathAtom = atom<string | null>(null);
-export const useSelectedPath = () => {
-    const { documentDrives } = useDocumentDriveServer();
-    const [selectedPath, setSelectedPath] = useAtom(selectedPathAtom);
-
-    useEffect(() => {
-        if (!selectedPath) {
-            return;
-        }
-        const driveId = decodeID(getRootPath(selectedPath));
-        const pathComponents = selectedPath.split('/');
-        const nodeId =
-            pathComponents.length > 1
-                ? decodeID(pathComponents[pathComponents.length - 1])
-                : undefined;
-
-        const drive = documentDrives.find(
-            drive => drive.state.global.id === driveId,
-        );
-        const file = drive?.state.global.nodes.find(node => node.id === nodeId);
-        // if drive was deleted then removes selected path
-        if (!drive) {
-            setSelectedPath(null);
-        }
-        // if file was deleted then selects parent folder
-        else if (nodeId && !file) {
-            setSelectedPath(pathComponents.slice(0, -1).join('/'));
-        }
-    }, [documentDrives, selectedPath]);
-
-    return useMemo(
-        () => [selectedPath, setSelectedPath] as const,
-        [selectedPath, setSelectedPath],
-    );
-};
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { TDocumentDriveServer } from 'src/hooks/useDocumentDriveServer';
 
 function debounceOperations(
     callback: (operations: Operation[]) => Promise<Document | undefined>,
@@ -80,32 +43,42 @@ function debounceOperations(
     };
 }
 
-export const useFileNodeDocument = (drive?: string, id?: string) => {
-    const { openFile, addOperations, onStrandUpdate } =
-        useDocumentDriveServer();
+export function useFileNodeDocument(
+    props: TUiNodesContext & TDocumentDriveServer,
+) {
+    const { selectedNode, openFile, addOperations, onStrandUpdate } = props;
     const [selectedDocument, setSelectedDocument] = useState<
         Document | undefined
     >();
 
-    async function fetchDocument(drive: string, id: string) {
+    const fetchDocument = useCallback(async () => {
+        if (selectedNode?.kind !== FILE) {
+            return;
+        }
         try {
-            const document = await openFile(drive, id);
+            const document = await openFile(
+                selectedNode.driveId,
+                selectedNode.id,
+            );
             setSelectedDocument(document);
         } catch (error) {
             setSelectedDocument(undefined);
             console.error(error);
         }
-    }
+    }, [openFile, selectedNode?.driveId, selectedNode?.id, selectedNode?.kind]);
 
     useEffect(() => {
         let handler: (() => void) | undefined = undefined;
-        if (drive && id) {
+        if (selectedNode?.kind === FILE) {
             handler = onStrandUpdate(strand => {
-                if (strand.driveId === drive && strand.documentId === id) {
-                    fetchDocument(drive, id);
+                if (
+                    strand.driveId === selectedNode.driveId &&
+                    strand.documentId === selectedNode.id
+                ) {
+                    fetchDocument().catch(console.error);
                 }
             });
-            fetchDocument(drive, id);
+            fetchDocument().catch(console.error);
         } else {
             setSelectedDocument(undefined);
         }
@@ -113,17 +86,31 @@ export const useFileNodeDocument = (drive?: string, id?: string) => {
         return () => {
             handler?.();
         };
-    }, [drive, id]);
+    }, [fetchDocument, onStrandUpdate, selectedNode]);
 
-    useEffect(() => {}, [drive, id]);
-
-    const addOperation = useMemo(() => {
-        if (drive && id) {
+    const addOperationToSelectedDocument = useMemo(() => {
+        if (selectedNode?.kind === FILE) {
             return debounceOperations(operations =>
-                addOperations(drive, id, operations),
+                addOperations(
+                    selectedNode.driveId,
+                    selectedNode.id,
+                    operations,
+                ),
             );
         }
-    }, [addOperations, drive, id]);
+    }, [
+        addOperations,
+        selectedNode?.driveId,
+        selectedNode?.id,
+        selectedNode?.kind,
+    ]);
 
-    return [selectedDocument, setSelectedDocument, addOperation] as const;
-};
+    return useMemo(
+        () => ({
+            selectedDocument,
+            setSelectedDocument,
+            addOperationToSelectedDocument,
+        }),
+        [selectedDocument, setSelectedDocument, addOperationToSelectedDocument],
+    );
+}
