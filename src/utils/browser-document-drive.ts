@@ -15,31 +15,33 @@ export const BrowserDocumentDriveServer = new DocumentDriveServer(
     new InMemoryCache(),
     new BaseQueueManager(10, 10),
 );
-storage
-    .migrateOperationSignatures()
-    .then(() =>
-        BrowserDocumentDriveServer.getDrives()
-            .then(drives => {
-                if (
-                    !drives.length &&
-                    connectConfig.drives.sections.LOCAL.enabled
-                ) {
-                    BrowserDocumentDriveServer.addDrive({
-                        global: {
-                            id: utils.hashKey(),
-                            name: 'My Local Drive',
-                            icon: null,
-                            slug: 'my-local-drive',
-                        },
-                        local: {
-                            availableOffline: false,
-                            sharingType: 'private',
-                            listeners: [],
-                            triggers: [],
-                        },
-                    }).catch(logger.error);
-                }
-            })
-            .catch(logger.error),
-    )
-    .catch(logger.error);
+
+async function init() {
+    try {
+        await storage.migrateOperationSignatures();
+
+        await BrowserDocumentDriveServer.initialize();
+
+        const drives = await BrowserDocumentDriveServer.getDrives();
+        if (!drives.length && connectConfig.drives.sections.LOCAL.enabled) {
+            await BrowserDocumentDriveServer.addDrive({
+                global: {
+                    id: utils.hashKey(),
+                    name: 'My Local Drive',
+                    icon: null,
+                    slug: 'my-local-drive',
+                },
+                local: {
+                    availableOffline: false,
+                    sharingType: 'private',
+                    listeners: [],
+                    triggers: [],
+                },
+            });
+        }
+    } catch (e) {
+        logger.error(e);
+    }
+}
+
+init().catch(logger.error);
