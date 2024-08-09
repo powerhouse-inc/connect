@@ -16,6 +16,7 @@ import {
 import { useAtomValue } from 'jotai';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useConnectCrypto, useConnectDid } from 'src/hooks/useConnectCrypto';
+import { useLoadingScreen } from 'src/hooks/useLoadingScreen';
 import { TUiNodes } from 'src/hooks/useUiNodes';
 import { useUndoRedoShortcuts } from 'src/hooks/useUndoRedoShortcuts';
 import { useUserPermissions } from 'src/hooks/useUserPermissions';
@@ -98,6 +99,7 @@ export function DocumentEditor(props: EditorProps) {
     const documentModel = useDocumentModel(initialDocument.documentType);
     const editor = useEditor(initialDocument.documentType);
     const theme = useAtomValue(themeAtom);
+    const [, setShowLoadingScreen] = useLoadingScreen();
     const [document, _dispatch, error] = useDocumentDispatch(
         documentModel?.reducer,
         initialDocument,
@@ -117,6 +119,10 @@ export function DocumentEditor(props: EditorProps) {
         (document.revision.global > 0 || document.revision.local > 0);
     const canRedo = !!document?.clipboard.length;
     useUndoRedoShortcuts({ undo, redo, canUndo, canRedo });
+
+    if (isLoadingEditor) {
+        setShowLoadingScreen(isLoadingEditor);
+    }
 
     function addActionContext(action: Action): Action {
         if (!user) return action;
@@ -216,10 +222,6 @@ export function DocumentEditor(props: EditorProps) {
                 {initialDocument.documentType}
             </h3>
         );
-    }
-
-    if (!document || isLoadingEditor) {
-        return <EditorLoader />;
     }
 
     const EditorComponent = editor.Component;

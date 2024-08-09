@@ -5,19 +5,32 @@ type InitialLoadingStatus =
     | 'LOADING_DEFAULT_DRIVES'
     | 'SYNCING_DRIVES';
 
-export const useInitialLoadingStatus = () => {
+export const useInitialLoadingStatus = (driveId?: string) => {
     const {
         config: { defaultDrives },
     } = useFeatureFlag();
 
     let status: InitialLoadingStatus = 'READY';
 
+    const filteredDrives =
+        (driveId
+            ? defaultDrives?.filter(driveConfig => {
+                  const parsedUrl = new URL(driveConfig.url);
+                  const pathname = parsedUrl.pathname;
+                  const driveIdFromUrl = pathname.substring(
+                      pathname.lastIndexOf('/') + 1,
+                  );
+
+                  return driveId === driveIdFromUrl;
+              })
+            : defaultDrives) || [];
+
     if (
-        defaultDrives?.some(drive => !drive.loaded) ||
-        defaultDrives?.some(drive => drive.loading)
+        filteredDrives.some(drive => !drive.loaded) ||
+        filteredDrives.some(drive => drive.loading)
     ) {
         status = 'LOADING_DEFAULT_DRIVES';
-    } else if (defaultDrives?.some(drive => !drive.initialSyncReady)) {
+    } else if (filteredDrives.some(drive => !drive.initialSyncReady)) {
         status = 'SYNCING_DRIVES';
     }
 

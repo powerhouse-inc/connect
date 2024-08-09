@@ -33,7 +33,7 @@ function buildPathname(selectedNodePath: UiNode[]) {
 }
 
 function makeDriveNodeUrlComponent(driveNode: UiDriveNode) {
-    const component = driveNode.slug || driveNode.name || driveNode.id;
+    const component = driveNode.slug || driveNode.id || driveNode.name;
 
     return `/d/${encodeURIComponent(component)}`;
 }

@@ -1,11 +1,9 @@
 import { AnimatedLoader } from '@powerhousedao/design-system';
-import { useInitialLoadingStatus } from 'src/hooks/useInitialLoadingStatus';
+import { useLoadingScreen } from 'src/hooks/useLoadingScreen';
 import { twMerge } from 'tailwind-merge';
 
 export const LoadingScreen = () => {
-    const loadingStatus = useInitialLoadingStatus();
-
-    const showLoading = loadingStatus !== 'READY';
+    const [showLoading] = useLoadingScreen();
 
     return (
         <div
