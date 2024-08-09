@@ -3,6 +3,9 @@ import { logger } from 'src/services/logger';
 import { useDocumentDriveServer } from './useDocumentDriveServer';
 import { useFeatureFlag } from './useFeatureFlags';
 import defaultConfig from './useFeatureFlags/default-config';
+import { useUiNodes } from './useUiNodes';
+
+const DRIVE_SYNC_TIMEOUT = 30000;
 
 type DefaultDrive = {
     url: string;
@@ -38,6 +41,10 @@ export const useLoadDefaultDrives = () => {
         setConfig,
         config: { defaultDrives },
     } = useFeatureFlag();
+    const { onSyncStatus } = useUiNodes();
+
+    const pendingDrives = defaultDrives?.filter(drive => !drive.loaded) || [];
+    const isLoadingDrives = pendingDrives.some(drive => drive.loading);
 
     async function resetDefaultDrive() {
         await clearStorage();
@@ -45,6 +52,62 @@ export const useLoadDefaultDrives = () => {
         location.reload();
         loadingDrives.current = [];
     }
+
+    useEffect(() => {
+        // if for some reason the drives are not loaded and synced after 30 seconds, mark them as ready
+        // this is to prevent the user from being stuck in the loading state
+        const timeout = setTimeout(() => {
+            setConfig(conf => ({
+                ...conf,
+                defaultDrives: (conf.defaultDrives || []).map(driveConf => ({
+                    ...driveConf,
+                    initialSyncReady: true,
+                })),
+            }));
+        }, DRIVE_SYNC_TIMEOUT);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
+    useEffect(() => {
+        const initialSyncRequired = defaultDrives?.some(
+            drive => !drive.initialSyncReady,
+        );
+
+        if (!initialSyncRequired) return;
+
+        const unsub = onSyncStatus((driveId, status) => {
+            if (status === 'SYNCING') return;
+
+            const drive = documentDrives.find(
+                drive => drive.state.global.id === driveId,
+            );
+            if (!drive) return;
+
+            const driveToUpdate = defaultDrives?.find(driveConfig => {
+                return drive.state.local.triggers.some(
+                    trigger => trigger.data?.url === driveConfig.url,
+                );
+            });
+
+            if (!driveToUpdate) return;
+
+            setConfig(conf => ({
+                ...conf,
+                defaultDrives: [
+                    ...(conf.defaultDrives || []).filter(
+                        drive => drive.url !== driveToUpdate.url,
+                    ),
+                    {
+                        ...driveToUpdate,
+                        initialSyncReady: true,
+                    },
+                ],
+            }));
+        });
+
+        return unsub;
+    }, [documentDrives, defaultDrives, onSyncStatus]);
 
     useEffect(() => {
         if (!defaultDrives) return;
@@ -80,12 +143,30 @@ export const useLoadDefaultDrives = () => {
                             ...(conf.defaultDrives || []).filter(
                                 drive => drive.url !== defaultDrive.url,
                             ),
-                            { ...defaultDrive, loaded: true },
+                            {
+                                ...defaultDrive,
+                                loaded: true,
+                                loading: false,
+                            },
                         ],
                     }));
 
                     return;
                 }
+
+                setConfig(conf => ({
+                    ...conf,
+                    defaultDrives: [
+                        ...(conf.defaultDrives || []).filter(
+                            drive => drive.url !== defaultDrive.url,
+                        ),
+                        {
+                            ...defaultDrive,
+                            loading: true,
+                            initialSyncReady: false,
+                        },
+                    ],
+                }));
 
                 loadingDrives.current.push(defaultDrive.url);
 
@@ -121,19 +202,44 @@ export const useLoadDefaultDrives = () => {
                                 ...(conf.defaultDrives || []).filter(
                                     drive => drive.url !== defaultDrive.url,
                                 ),
-                                { ...defaultDrive, loaded: true },
+                                {
+                                    ...defaultDrive,
+                                    loaded: true,
+                                },
                             ],
                         })),
                     )
-                    .catch(logger.error)
+                    .catch(err => {
+                        logger.error(err);
+
+                        setConfig(conf => ({
+                            ...conf,
+                            defaultDrives: [
+                                ...(conf.defaultDrives || []).filter(
+                                    drive => drive.url !== defaultDrive.url,
+                                ),
+                                { ...defaultDrive, initialSyncReady: true },
+                            ],
+                        }));
+                    })
                     .finally(() => {
+                        setConfig(conf => ({
+                            ...conf,
+                            defaultDrives: [
+                                ...(conf.defaultDrives || []).filter(
+                                    drive => drive.url !== defaultDrive.url,
+                                ),
+                                { ...defaultDrive, loading: false },
+                            ],
+                        }));
+
                         loadingDrives.current = loadingDrives.current.filter(
                             url => url !== defaultDrive.url,
                         );
                     });
             }
         }
-    }, [documentDrives, defaultDrives, documentDrivesStatus]);
+    }, [documentDrives, documentDrivesStatus]);
 
-    return loadingDrives.current.length > 0;
+    return isLoadingDrives;
 };

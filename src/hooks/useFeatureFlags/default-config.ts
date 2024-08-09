@@ -9,8 +9,10 @@ const disabledEditors = DISABLED_EDITORS?.split(',');
 
 export interface FeatureFlag {
     defaultDrives?: {
-        url: string;
-        loaded: boolean;
+        url: string; // url of the remote drive
+        loaded: boolean; // whether the drive has been loaded or not
+        loading: boolean; // whether the drive is currently being loaded
+        initialSyncReady?: boolean; // whether the drive was synced for the first time
     }[];
     editors: {
         enabledEditors?: '*' | string[];
@@ -22,7 +24,9 @@ const defaultConfig: FeatureFlag = {
     defaultDrives: DEFAULT_DRIVES_URL
         ? DEFAULT_DRIVES_URL.split(',').map(url => ({
               url,
+              loading: true,
               loaded: false,
+              initialSyncReady: false,
           }))
         : undefined,
     editors: {
