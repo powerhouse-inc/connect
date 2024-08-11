@@ -8,12 +8,12 @@ import {
 import { DocumentModel } from 'document-model/document';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Option } from 'react-multi-select-component';
 import { useModal } from 'src/components/modal';
 import { useConnectConfig } from 'src/hooks/useConnectConfig';
 import { useDocumentDriveServer } from 'src/hooks/useDocumentDriveServer';
 import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
 import { useLogin } from 'src/hooks/useLogin';
+import { logger } from 'src/services/logger';
 import {
     useDocumentModels,
     useFilteredDocumentModels,
@@ -43,7 +43,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = props => {
     const { setConfig } = useFeatureFlag();
     const { showModal } = useModal();
     const [connectConfig] = useConnectConfig();
-    const [selectedDocuments, setSelectedDocuments] = useState<Option[]>(
+    const [selectedDocuments, setSelectedDocuments] = useState(
         mapDocumentModelsToOptions(enabledDocuments),
     );
     const { logout, status } = useLogin();
@@ -53,9 +53,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = props => {
         setConfig(conf => ({
             ...conf,
             editors: {
-                enabledEditors: selectedDocuments.map(
-                    doc => doc.value as string,
-                ),
+                enabledEditors: selectedDocuments.map(doc => doc.value),
             },
         }));
 
@@ -87,7 +85,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = props => {
                         // refreshes the page to reload default drive
                         onRefresh();
                     })
-                    .catch(console.error);
+                    .catch(logger.error);
             },
             onCancel: () => showModal('settingsModal', { onRefresh }),
         });
