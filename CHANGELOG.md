@@ -1,3 +1,17 @@
+# [1.0.0-dev.64](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.63...v1.0.0-dev.64) (2024-08-07)
+
+
+### Features
+
+* fixed sentry console capture ([2962d91](https://github.com/powerhouse-inc/document-model-electron/commit/2962d916c6335f9a6cdef864917bdacd0d967d78))
+
+# [1.0.0-dev.63](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.62...v1.0.0-dev.63) (2024-08-07)
+
+
+### Features
+
+* bump libs ([e0b08c3](https://github.com/powerhouse-inc/document-model-electron/commit/e0b08c3af686b9a4e1b2ea02342ae74e35445e7c))
+
 # [1.0.0-dev.62](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.61...v1.0.0-dev.62) (2024-08-05)
 
 
