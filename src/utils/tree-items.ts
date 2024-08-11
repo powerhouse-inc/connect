@@ -1,4 +1,4 @@
-import { UiNode } from '@powerhousedao/design-system';
+import { TreeItem } from '@powerhousedao/design-system';
 
-export const sortUiNodesByName = (a: UiNode, b: UiNode) =>
-    a.name.localeCompare(b.name);
+export const sortTreeItemsByLabel = (a: TreeItem, b: TreeItem) =>
+    a.label.localeCompare(b.label);

@@ -1,4 +1,4 @@
-import { FILE, RevisionHistory } from '@powerhousedao/design-system';
+import { RevisionHistory } from '@powerhousedao/design-system';
 import {
     Action,
     ActionErrorCallback,
@@ -13,13 +13,12 @@ import {
     actions,
     utils,
 } from 'document-model/document';
+import { Action as HistoryAction } from 'history';
 import { useAtomValue } from 'jotai';
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useConnectCrypto, useConnectDid } from 'src/hooks/useConnectCrypto';
-import { TUiNodes } from 'src/hooks/useUiNodes';
 import { useUndoRedoShortcuts } from 'src/hooks/useUndoRedoShortcuts';
 import { useUserPermissions } from 'src/hooks/useUserPermissions';
-import { logger } from 'src/services/logger';
 import { useDocumentModel } from 'src/store/document-model';
 import { useEditor } from 'src/store/editor';
 import { themeAtom } from 'src/store/theme';
@@ -29,19 +28,32 @@ import {
     useDocumentDispatch,
 } from 'src/utils/document-model';
 import Button from './button';
-import { EditorLoader } from './editor-loader';
+import history from './history';
 
-export type EditorProps<
+export interface EditorProps<
     T = unknown,
     A extends Action = Action,
     LocalState = unknown,
-> = TUiNodes & {
+> {
     document: Document<T, A, LocalState>;
+    onChange?: (document: Document<T, A, LocalState>) => void;
+}
+
+export type EditorComponent<
+    T = unknown,
+    A extends Action = Action,
+    LocalState = unknown,
+> = (props: EditorProps<T, A, LocalState>) => JSX.Element;
+
+export interface IProps extends EditorProps {
+    // todo: check that this is equivalent to the document ID
+    fileNodeId: string;
+    onClose: () => void;
     onExport: () => void;
     onAddOperation: (operation: Operation) => Promise<void>;
     onOpenSwitchboardLink?: () => Promise<void>;
-    onChange?: (document: Document<T, A, LocalState>) => void;
-};
+    fileId: string;
+}
 
 const signOperation = async (
     operation: Operation,
@@ -55,9 +67,7 @@ const signOperation = async (
     if (!operation.context) return operation;
     if (!operation.context.signer) return operation;
     if (!reducer) {
-        logger.error(
-            `Document model '${document.documentType}' does not have a reducer`,
-        );
+        console.error('Document model does not have a reducer');
         return operation;
     }
 
@@ -80,17 +90,16 @@ const signOperation = async (
     return signedOperation;
 };
 
-export function DocumentEditor(props: EditorProps) {
-    const {
-        selectedNode,
-        selectedParentNode,
-        document: initialDocument,
-        setSelectedNode,
-        onChange,
-        onExport,
-        onAddOperation,
-        onOpenSwitchboardLink,
-    } = props;
+export const DocumentEditor: React.FC<IProps> = ({
+    fileNodeId,
+    document: initialDocument,
+    onChange,
+    onClose,
+    onExport,
+    fileId,
+    onAddOperation,
+    onOpenSwitchboardLink,
+}) => {
     const [showRevisionHistory, setShowRevisionHistory] = useState(false);
     const user = useUser();
     const connectDid = useConnectDid();
@@ -108,15 +117,6 @@ export function DocumentEditor(props: EditorProps) {
     );
     const { isAllowedToCreateDocuments, isAllowedToEditDocuments } =
         useUserPermissions();
-    const isLoadingEditor =
-        !!editor &&
-        !!document &&
-        !editor.documentTypes.includes(document.documentType);
-    const canUndo =
-        !!document &&
-        (document.revision.global > 0 || document.revision.local > 0);
-    const canRedo = !!document?.clipboard.length;
-    useUndoRedoShortcuts({ undo, redo, canUndo, canRedo });
 
     function addActionContext(action: Action): Action {
         if (!user) return action;
@@ -149,14 +149,12 @@ export function DocumentEditor(props: EditorProps) {
             operation,
             state,
         ) => {
-            if (!selectedNode) return;
-
             const { prevState } = state;
 
             signOperation(
                 operation,
                 sign,
-                selectedNode.id,
+                fileId,
                 prevState,
                 documentModel?.reducer,
                 user,
@@ -165,7 +163,7 @@ export function DocumentEditor(props: EditorProps) {
                     window.documentEditorDebugTools?.pushOperation(operation);
                     return onAddOperation(op);
                 })
-                .catch(logger.error);
+                .catch(console.error);
         };
 
         _dispatch(addActionContext(action), callback, onErrorCallback);
@@ -178,10 +176,17 @@ export function DocumentEditor(props: EditorProps) {
     }, []);
 
     useEffect(() => {
-        if (!document) return;
         window.documentEditorDebugTools?.setDocument(document);
         onChange?.(document);
     }, [document]);
+
+    useEffect(() => {
+        history.listen(update => {
+            if (update.action === HistoryAction.Pop) {
+                onClose();
+            }
+        });
+    }, [onClose]);
 
     function undo() {
         dispatch(actions.undo());
@@ -191,14 +196,12 @@ export function DocumentEditor(props: EditorProps) {
         dispatch(actions.redo());
     }
 
-    function onClose() {
-        setSelectedNode(selectedParentNode);
-    }
+    const canUndo =
+        document &&
+        (document.revision.global > 0 || document.revision.local > 0);
+    const canRedo = document.clipboard.length > 0;
 
-    if (selectedNode?.kind !== FILE) {
-        console.error('Selected node is not a file');
-        return null;
-    }
+    useUndoRedoShortcuts({ undo, redo, canUndo, canRedo });
 
     if (!documentModel) {
         return (
@@ -216,10 +219,6 @@ export function DocumentEditor(props: EditorProps) {
                 {initialDocument.documentType}
             </h3>
         );
-    }
-
-    if (!document || isLoadingEditor) {
-        return <EditorLoader />;
     }
 
     const EditorComponent = editor.Component;
@@ -247,32 +246,28 @@ export function DocumentEditor(props: EditorProps) {
                 {showRevisionHistory ? (
                     <RevisionHistory
                         documentTitle={document.name}
-                        documentId={selectedNode.id}
+                        documentId={fileNodeId}
                         globalOperations={document.operations.global}
                         localOperations={document.operations.local}
                         onClose={() => setShowRevisionHistory(false)}
                     />
                 ) : (
-                    <Suspense fallback={<EditorLoader />}>
-                        <EditorComponent
-                            error={error}
-                            context={context}
-                            document={document}
-                            dispatch={dispatch}
-                            onClose={onClose}
-                            onExport={onExport}
-                            onSwitchboardLinkClick={onOpenSwitchboardLink}
-                            onShowRevisionHistory={() =>
-                                setShowRevisionHistory(true)
-                            }
-                            isAllowedToCreateDocuments={
-                                isAllowedToCreateDocuments
-                            }
-                            isAllowedToEditDocuments={isAllowedToEditDocuments}
-                        />
-                    </Suspense>
+                    <EditorComponent
+                        error={error}
+                        context={context}
+                        document={document}
+                        dispatch={dispatch}
+                        onClose={onClose}
+                        onExport={onExport}
+                        onSwitchboardLinkClick={onOpenSwitchboardLink}
+                        onShowRevisionHistory={() =>
+                            setShowRevisionHistory(true)
+                        }
+                        isAllowedToCreateDocuments={isAllowedToCreateDocuments}
+                        isAllowedToEditDocuments={isAllowedToEditDocuments}
+                    />
                 )}
             </>
         </div>
     );
-}
+};

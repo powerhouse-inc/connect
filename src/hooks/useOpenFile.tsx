@@ -1,11 +1,10 @@
 import { Document } from 'document-model/document';
-import { logger } from 'src/services/logger';
 import { useGetDocumentModel } from 'src/store/document-model';
 import { loadFile } from 'src/utils/file';
 
 export function useOpenFile(
     onDocument: (document: Document, file: File) => void,
-    onError?: (error: Error) => void,
+    onError?: (error: Error) => void
 ) {
     const getDocumentModel = useGetDocumentModel();
     return async () => {
@@ -19,7 +18,7 @@ export function useOpenFile(
                 throw new Error('File was not recognized.');
             }
         } catch (error) {
-            logger.error('Error opening file:', error); // TODO improve error handling
+            console.error('Error opening file:', error); // TODO improve error handling
             onError?.(error as Error);
         }
     };

@@ -4,7 +4,6 @@ import { OperationScope } from 'document-model/document';
 import { atom, useAtom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { useCallback, useMemo } from 'react';
-import { logger } from 'src/services/logger';
 import { ClientErrorHandler } from './useClientErrorHandler';
 
 // map of DocumentDriveServer objects and their Document Drives
@@ -66,11 +65,11 @@ export function useDocumentDrives(server: IDocumentDriveServer) {
                     const drive = await server.getDrive(id);
                     documentDrives.push(drive);
                 } catch (error) {
-                    logger.error(error);
+                    console.error(error);
                 }
             }
         } catch (error) {
-            logger.error(error);
+            console.error(error);
         } finally {
             setDocumentDrives(documentDrives);
         }
@@ -95,7 +94,7 @@ export function useDocumentDrives(server: IDocumentDriveServer) {
                 'syncStatus',
                 async (_event, _status, error) => {
                     if (error) {
-                        logger.error(error);
+                        console.error(error);
                     }
                     await refreshDocumentDrives();
                 },

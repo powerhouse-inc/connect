@@ -1,21 +1,31 @@
 import {
-    CreateDocumentModal as ConnectCreateDocumentModal,
-    FILE,
-    TDocumentType,
-    UiDriveNode,
-    UiFolderNode,
-    UiNode,
+    RenameNodeModal,
+    TreeItem,
+    decodeID,
 } from '@powerhousedao/design-system';
+import { Node } from 'document-model-libs/document-drive';
 import { DocumentModel } from 'document-model/document';
+import React, { Dispatch, SetStateAction } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDocumentDriveServer } from 'src/hooks/useDocumentDriveServer';
-import { makeNodeSlugFromNodeName } from 'src/utils/slug';
 
 export interface CreateDocumentModalProps {
     open: boolean;
-    selectedParentNode: UiDriveNode | UiFolderNode | null;
-    setSelectedNode: (uiNode: UiNode | null) => void;
+    driveID: string;
     documentModel: DocumentModel;
+    selectedFolder?: TreeItem;
     onClose: () => void;
+    driveNodes?: Node[];
+    setSelectedFileNode?: Dispatch<
+        SetStateAction<
+            | {
+                  drive: string;
+                  id: string;
+                  parentFolder: string | null;
+              }
+            | undefined
+        >
+    >;
 }
 
 export const CreateDocumentModal: React.FC<
@@ -24,45 +34,52 @@ export const CreateDocumentModal: React.FC<
     const {
         open,
         onClose,
-        selectedParentNode,
-        setSelectedNode,
+        driveID,
+        selectedFolder,
+        setSelectedFileNode,
+        driveNodes,
         documentModel,
     } = props;
 
+    const { t } = useTranslation();
     const { addDocument } = useDocumentDriveServer();
 
     const onCreateDocument = async (documentName: string) => {
         onClose();
 
-        if (!selectedParentNode) {
-            throw new Error('No drive or folder selected');
+        if (!driveID || !selectedFolder) {
+            throw new Error('No drive selected');
         }
 
+        // remove first segment of path
+        const parentFolder = selectedFolder.path.split('/').slice(1).pop();
+
         const node = await addDocument(
-            selectedParentNode.driveId,
+            driveID,
             documentName || `New ${documentModel.documentModel.name}`,
             documentModel.documentModel.id,
-            selectedParentNode.id,
+            parentFolder ? decodeID(parentFolder) : undefined,
         );
 
         if (node) {
-            setSelectedNode({
-                ...node,
-                slug: makeNodeSlugFromNodeName(node.name),
-                kind: FILE,
-                documentType: node.documentType as TDocumentType,
-                parentFolder: selectedParentNode.id,
-                driveId: selectedParentNode.driveId,
-                syncStatus: selectedParentNode.syncStatus,
-                synchronizationUnits: [],
-                sharingType: selectedParentNode.sharingType,
+            if (!driveNodes) {
+                throw new Error(`Drive with id ${driveID} not found`);
+            }
+            setSelectedFileNode?.({
+                drive: driveID,
+                id: node.id,
+                parentFolder: node.parentFolder,
             });
         }
     };
 
     return (
-        <ConnectCreateDocumentModal
+        <RenameNodeModal
             open={open}
+            header={t('modals.createDocument.header')}
+            placeholder={t('modals.createDocument.placeholder')}
+            cancelLabel={t('common.cancel')}
+            continueLabel={t('common.create')}
             onContinue={onCreateDocument}
             onOpenChange={status => {
                 if (!status) return onClose();

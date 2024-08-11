@@ -1,13 +1,29 @@
-import { FileItem, UiFileNode } from '@powerhousedao/design-system';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import {
+    ConnectDropdownMenuItem,
+    TreeItem,
+} from '@powerhousedao/design-system';
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TUiNodes } from 'src/hooks/useUiNodes';
+import { FileItem } from 'src/components/file-item';
+
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { SetIsWriteMode } from 'src/hooks/useFileOptions';
 import { useWindowSize } from 'src/hooks/useWindowSize';
 
-type Props = TUiNodes & {
-    fileNodes: UiFileNode[];
-};
+interface IProps {
+    decodedDriveID: string;
+    onFileSelected: (drive: string, id: string) => void;
+    onFileDeleted: (drive: string, id: string) => void;
+
+    files: TreeItem[];
+    fileItemOptions: ConnectDropdownMenuItem[];
+    isAllowedToCreateDocuments: boolean;
+    onFileOptionsClick: (
+        optionId: string,
+        fileNode: TreeItem,
+        setIsWriteMode: SetIsWriteMode,
+    ) => Promise<void>;
+}
 
 const GAP = 8;
 const ITEM_WIDTH = 256;
@@ -15,15 +31,24 @@ const ITEM_HEIGHT = 48;
 
 const USED_SPACE = 420;
 
-export function FileContentView(props: Props) {
+export const FileContentView: React.FC<IProps> = ({
+    decodedDriveID,
+    onFileDeleted,
+    onFileSelected,
+
+    files,
+    fileItemOptions,
+    onFileOptionsClick,
+    isAllowedToCreateDocuments,
+}) => {
     const parentRef = useRef(null);
     const { t } = useTranslation();
     const windowSize = useWindowSize();
-    const { fileNodes } = props;
+
     const availableWidth = windowSize.innerWidth - USED_SPACE;
 
     const columnCount = Math.floor(availableWidth / (ITEM_WIDTH + GAP)) || 1;
-    const rowCount = Math.ceil(fileNodes.length / columnCount);
+    const rowCount = Math.ceil(files.length / columnCount);
 
     const rowVirtualizer = useVirtualizer({
         count: rowCount,
@@ -56,12 +81,12 @@ export function FileContentView(props: Props) {
     const getItem = (
         rowIndex: number,
         columnIndex: number,
-    ): UiFileNode | null => {
+    ): TreeItem | null => {
         const index = getItemIndex(rowIndex, columnIndex);
-        return fileNodes[index] || null;
+        return files[index] || null;
     };
 
-    if (fileNodes.length === 0) {
+    if (files.length < 1) {
         return (
             <div className="mb-8 text-sm text-gray-400">
                 {t('folderView.sections.documents.empty')}
@@ -70,9 +95,9 @@ export function FileContentView(props: Props) {
     }
 
     const renderItem = (rowIndex: number, columnIndex: number) => {
-        const fileNode = getItem(rowIndex, columnIndex);
+        const file = getItem(rowIndex, columnIndex);
 
-        if (!fileNode) {
+        if (!file) {
             return null;
         }
 
@@ -82,7 +107,16 @@ export function FileContentView(props: Props) {
                     marginLeft: columnIndex === 0 ? 0 : GAP,
                 }}
             >
-                <FileItem {...props} key={fileNode.id} uiNode={fileNode} />
+                <FileItem
+                    key={file.id}
+                    file={file}
+                    decodedDriveID={decodedDriveID}
+                    onFileDeleted={onFileDeleted}
+                    onFileSelected={onFileSelected}
+                    itemOptions={fileItemOptions}
+                    onFileOptionsClick={onFileOptionsClick}
+                    isAllowedToCreateDocuments={isAllowedToCreateDocuments}
+                />
             </div>
         );
     };
@@ -132,6 +166,6 @@ export function FileContentView(props: Props) {
             </div>
         </div>
     );
-}
+};
 
 export default FileContentView;

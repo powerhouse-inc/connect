@@ -3,18 +3,10 @@ import { useDocumentDriveServer } from './useDocumentDriveServer';
 
 type ExtendedDocumentDriveState = DocumentDriveState & { remoteUrl?: string };
 
-export function useDocumentDriveById(driveId: string | undefined) {
+export function useDocumentDriveById(driveID: string) {
     const { documentDrives } = useDocumentDriveServer();
-
-    if (!driveId)
-        return {
-            drive: null,
-            remoteUrl: null,
-            isRemoteDrive: false,
-        };
-
     const drive = documentDrives.find(
-        drive => drive.state.global.id === driveId,
+        drive => drive.state.global.id === driveID,
     );
 
     const pullResponder = drive?.state.local.triggers.find(

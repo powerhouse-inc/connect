@@ -1,11 +1,9 @@
-import { LOCAL } from '@powerhousedao/design-system';
 import { PullResponderTrigger } from 'document-drive';
 import {
     PullResponderTriggerData,
     Trigger,
 } from 'document-model-libs/document-drive';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { logger } from 'src/services/logger';
+import { useCallback, useRef, useState } from 'react';
 import { useDocumentDriveServer } from './useDocumentDriveServer';
 import { useSwitchboard } from './useSwitchboard';
 
@@ -88,7 +86,7 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
                     delay === DELAY_LIMIT ? delay : delay * 10,
                 );
 
-                logger.error(error);
+                console.error(error);
             } finally {
                 setHandlingInProgress(state =>
                     state.filter(code => code !== handlerCode),
@@ -120,7 +118,7 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
                     drive.state.global.name + ` (${drive.state.global.id})`,
                 );
 
-                await setDriveSharingType(driveId, LOCAL);
+                await setDriveSharingType(driveId, 'PRIVATE');
 
                 if (trigger.data?.url && drive.state.global.slug) {
                     const newId = await getDriveIdBySlug(
@@ -140,8 +138,8 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
                         });
                     }
                 }
-            } catch (e: unknown) {
-                logger.error(e);
+            } catch (e: any) {
+                console.error(e);
             } finally {
                 setHandlingInProgress(state =>
                     state.filter(code => code !== handlerCode),
@@ -149,75 +147,62 @@ export const useClientErrorHandler = (): ClientErrorHandler => {
             }
         },
         [
-            documentDrives,
+            pullResponderTriggerMap,
             removeTrigger,
-            renameDrive,
-            setDriveSharingType,
-            getDriveIdBySlug,
-            addRemoteDrive,
+            addTrigger,
+            pullResponderRegisterDelay,
+            registerNewPullResponderTrigger,
         ],
     );
 
     const strandsErrorHandler: ClientErrorHandler['strandsErrorHandler'] =
-        useCallback(
-            async (driveId, trigger, status, errorMessage) => {
-                switch (status) {
-                    case 400: {
-                        if (
-                            isListenerIdNotFound(
-                                errorMessage,
-                                trigger.data?.listenerId,
-                            )
-                        ) {
-                            const autoRegisterPullResponder =
-                                localStorage.getItem(
-                                    'AUTO_REGISTER_PULL_RESPONDER',
-                                ) !== 'false';
+        async (driveId, trigger, status, errorMessage) => {
+            switch (status) {
+                case 400: {
+                    if (
+                        isListenerIdNotFound(
+                            errorMessage,
+                            trigger.data?.listenerId,
+                        )
+                    ) {
+                        const autoRegisterPullResponder =
+                            localStorage.getItem(
+                                'AUTO_REGISTER_PULL_RESPONDER',
+                            ) !== 'false';
 
-                            if (!autoRegisterPullResponder) return;
-                            const handlerCode = `strands:${driveId}:${status}`;
-
-                            if (handlingInProgress.includes(handlerCode))
-                                return;
-                            if (!trigger.data) return;
-
-                            const delay =
-                                pullResponderRegisterDelay.current.get(
-                                    handlerCode,
-                                ) || 0;
-
-                            setTimeout(
-                                () =>
-                                    handleStrands400(
-                                        driveId,
-                                        trigger,
-                                        handlerCode,
-                                    ),
-                                delay,
-                            );
-                        }
-
-                        break;
-                    }
-
-                    case 404: {
+                        if (!autoRegisterPullResponder) return;
                         const handlerCode = `strands:${driveId}:${status}`;
+
                         if (handlingInProgress.includes(handlerCode)) return;
+                        if (!trigger.data) return;
+
+                        const delay =
+                            pullResponderRegisterDelay.current.get(
+                                handlerCode,
+                            ) || 0;
+
                         setTimeout(
                             () =>
-                                handleDriveNotFound(
-                                    driveId,
-                                    trigger,
-                                    handlerCode,
-                                ),
-                            0,
+                                handleStrands400(driveId, trigger, handlerCode),
+                            delay,
                         );
-                        break;
                     }
-                }
-            },
-            [handleDriveNotFound, handleStrands400, handlingInProgress],
-        );
 
-    return useMemo(() => ({ strandsErrorHandler }), [strandsErrorHandler]);
+                    break;
+                }
+
+                case 404: {
+                    const handlerCode = `strands:${driveId}:${status}`;
+                    if (handlingInProgress.includes(handlerCode)) return;
+                    setTimeout(
+                        () =>
+                            handleDriveNotFound(driveId, trigger, handlerCode),
+                        0,
+                    );
+                    break;
+                }
+            }
+        };
+
+    return { strandsErrorHandler };
 };

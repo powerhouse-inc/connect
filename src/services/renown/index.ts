@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { logger } from '../logger';
 import type { IStorage } from '../storage';
 import { getEnsInfo } from '../viem';
 import { RENOWN_URL } from './constants';
@@ -76,7 +75,7 @@ export class Renown {
             this.#updateUser(user);
             return user;
         } catch (error) {
-            logger.error(error);
+            console.error(error);
             this.#updateUser(undefined);
             throw error;
         }
