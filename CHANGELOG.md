@@ -11,6 +11,7 @@
 
 ### Features
 
+<<<<<<< HEAD
 * add animated loader for editors ([0ef0cc5](https://github.com/powerhouse-inc/document-model-electron/commit/0ef0cc587bb04d3fa65a4fd133c4c42f5998c92c))
 * add comments ([a5e81b2](https://github.com/powerhouse-inc/document-model-electron/commit/a5e81b22b1d634548a6323ef5b4a5efa2b0a87ec))
 * add file icon logic ([3ba0aae](https://github.com/powerhouse-inc/document-model-electron/commit/3ba0aae6d692a2368b19e1defeb655d582c5c220))
@@ -103,6 +104,11 @@
 * renown env var ([0b6bb86](https://github.com/powerhouse-inc/document-model-electron/commit/0b6bb86c10a525462f45db82a1cd5607b16a88be))
 
 # [1.0.0-next.4](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.3...v1.0.0-next.4) (2024-07-01)
+=======
+* updated document model deps ([efc3814](https://github.com/powerhouse-inc/document-model-electron/commit/efc38147792002975a87e433d2cf7f4091534b5e))
+
+# [1.0.0-dev.55](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.54...v1.0.0-dev.55) (2024-08-02)
+>>>>>>> develop
 
 
 ### Features
