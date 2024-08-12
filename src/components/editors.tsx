@@ -99,7 +99,7 @@ export function DocumentEditor(props: EditorProps) {
     const documentModel = useDocumentModel(initialDocument.documentType);
     const editor = useEditor(initialDocument.documentType);
     const theme = useAtomValue(themeAtom);
-    const [, setShowLoadingScreen] = useLoadingScreen();
+    const { setShowLoadingScreen } = useLoadingScreen();
     const [document, _dispatch, error] = useDocumentDispatch(
         documentModel?.reducer,
         initialDocument,

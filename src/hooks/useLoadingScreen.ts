@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useInitialLoadingStatus } from './useInitialLoadingStatus';
 
 const showLoadingAtom = atom(false);
+const customLoadingComponent = atom<React.ReactNode | undefined>(undefined);
 
 type RouteParams = {
     driveId?: string;
@@ -25,6 +26,9 @@ export const useLoadingScreen = () => {
         loadingStatus !== 'READY',
     );
     const [showLoading, setShowLoading] = useAtom(showLoadingAtom);
+    const [loadingComponent, setLoadingComponent] = useAtom(
+        customLoadingComponent,
+    );
 
     useEffect(() => {
         if (loadingStatus === 'READY') {
@@ -43,5 +47,10 @@ export const useLoadingScreen = () => {
 
     const showLoadingScreen = showInitialLoading || showLoading;
 
-    return [showLoadingScreen, setShowLoadingScreen] as const;
+    return {
+        loadingComponent,
+        showLoadingScreen,
+        setLoadingComponent,
+        setShowLoadingScreen,
+    };
 };
