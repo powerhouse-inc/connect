@@ -1,3 +1,18 @@
+# [1.0.0-next.7](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.6...v1.0.0-next.7) (2024-08-12)
+
+
+### Features
+
+* bump libs ([e0b08c3](https://github.com/powerhouse-inc/document-model-electron/commit/e0b08c3af686b9a4e1b2ea02342ae74e35445e7c))
+* bump libs ([a62aaf3](https://github.com/powerhouse-inc/document-model-electron/commit/a62aaf3b350974f50245f424c072a1cfc86c2d87))
+* bump libs ([6729c7a](https://github.com/powerhouse-inc/document-model-electron/commit/6729c7a9ca6efc8971e455ff9ccddf4d78a7f4e1))
+* bump libs ([3ad26e8](https://github.com/powerhouse-inc/document-model-electron/commit/3ad26e8957aaf8ab982c24f42e473886d4ef164e))
+* fixed sentry console capture ([2962d91](https://github.com/powerhouse-inc/document-model-electron/commit/2962d916c6335f9a6cdef864917bdacd0d967d78))
+* log catched errors to sentry ([8e5e9ba](https://github.com/powerhouse-inc/document-model-electron/commit/8e5e9baf3bbe47894b67f0ca9652dfb855996f30))
+* only open document when we know node is file ([9669a74](https://github.com/powerhouse-inc/document-model-electron/commit/9669a74d923d2a5c3b88ab857530731239a3d3f7))
+* remove to lower case from slug generation ([180e747](https://github.com/powerhouse-inc/document-model-electron/commit/180e74792b54b707c15d0192ed01909723ca39fc))
+* show at most one drive error toast ([f7644ae](https://github.com/powerhouse-inc/document-model-electron/commit/f7644ae54ec60c06a176cac8c5f023d81c296052))
+
 # [1.0.0-next.6](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.5...v1.0.0-next.6) (2024-08-02)
 
 
