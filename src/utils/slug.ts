@@ -1,3 +1,3 @@
 export function makeNodeSlugFromNodeName(name: string) {
-    return name.replaceAll(/\s/g, '-');
+    return encodeURIComponent(name.replaceAll(/\s/g, '-'));
 }
