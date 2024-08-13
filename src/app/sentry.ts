@@ -33,6 +33,7 @@ function initSenty() {
             'User is not allowed to create files',
             'User is not allowed to move documents',
             'The user aborted a request.',
+            'Sync status not found',
         ],
         tracesSampleRate: 1.0,
         replaysSessionSampleRate: 0.1,

@@ -557,7 +557,6 @@ export function useDocumentDriveServer(
             try {
                 return server.getSyncStatus(syncId);
             } catch (error) {
-                console.error(error);
                 return ERROR;
             }
         },
