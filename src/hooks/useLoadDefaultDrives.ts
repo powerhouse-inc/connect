@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { logger } from 'src/services/logger';
 import { useDocumentDriveServer } from './useDocumentDriveServer';
 import { useFeatureFlag } from './useFeatureFlags';
 import defaultConfig from './useFeatureFlags/default-config';
@@ -8,24 +9,20 @@ type DefaultDrive = {
     loaded: boolean;
 };
 
-const isLoadedDrivesUpToDate = (
-    defaultDrive: DefaultDrive,
-    loadedDrives: DefaultDrive[],
-) => {
-    return !!loadedDrives.find(
-        loadedDrive => loadedDrive.url === defaultDrive.url,
-    );
-};
-
 const areLoadedDrivesUpToDate = (
     defaultDrivesConfig: DefaultDrive[],
     loadedDrives: DefaultDrive[],
 ) => {
     for (const defaultDrive of defaultDrivesConfig) {
-        if (!isLoadedDrivesUpToDate(defaultDrive, loadedDrives)) {
+        const loadedDrive = loadedDrives.find(
+            loadedDrive => loadedDrive.url === defaultDrive.url,
+        );
+
+        if (!loadedDrive) {
             return false;
         }
     }
+
     return true;
 };
 
@@ -35,169 +32,107 @@ export const useLoadDefaultDrives = () => {
         addRemoteDrive,
         documentDrives,
         documentDrivesStatus,
-        deleteDrive,
+        clearStorage,
     } = useDocumentDriveServer();
     const {
         setConfig,
         config: { defaultDrives },
     } = useFeatureFlag();
 
+    async function resetDefaultDrive() {
+        await clearStorage();
+        setConfig(defaultConfig);
+        location.reload();
+        loadingDrives.current = [];
+    }
+
     useEffect(() => {
         if (!defaultDrives) return;
 
-        // checks if there are default drives missing
-        // DEFAULT_DRIVES_URL might have changed
-        const missingDefaultDrives =
-            defaultConfig.defaultDrives
-                ?.filter(
-                    driveToLoad =>
-                        !defaultDrives.find(
-                            loadedDrive => loadedDrive.url === driveToLoad.url,
-                        ),
-                )
-                .map(driveToLoad => ({
-                    url: driveToLoad.url,
-                    loaded: false,
-                })) ?? [];
-
-        // adds missing drives to config with loaded = false
-        if (missingDefaultDrives.length > 0) {
-            setConfig(conf => ({
-                ...conf,
-                defaultDrives: [
-                    ...(conf.defaultDrives ?? []),
-                    ...missingDefaultDrives,
-                ],
-            }));
+        // reset default drives if config has been updated
+        if (
+            loadingDrives.current.length <= 0 &&
+            defaultDrives.every(drive => drive.loaded) &&
+            defaultConfig.defaultDrives &&
+            defaultConfig.defaultDrives.length > 0 &&
+            !areLoadedDrivesUpToDate(defaultConfig.defaultDrives, defaultDrives)
+        ) {
+            void resetDefaultDrive();
+            return;
         }
 
-        // deletes drives that are not in the default drives list
-        // (specific for ArbGrants)
-        async function ArbGrantsDeleteOldDrives() {
-            const drivesToDelete: { id: string; url?: string }[] = [];
-            for (const loadedDrive of documentDrives) {
-                const isEnvDefault = loadedDrive.state.local.triggers.find(
-                    trigger =>
-                        defaultConfig.defaultDrives?.find(
-                            defaultDrive =>
-                                trigger.data?.url === defaultDrive.url,
-                        ),
-                );
-
-                if (!isEnvDefault) {
-                    const trigger = loadedDrive.state.local.triggers.find(
-                        trigger => trigger.type === 'PullResponder',
+        for (const defaultDrive of defaultDrives) {
+            if (
+                documentDrivesStatus === 'LOADED' &&
+                !defaultDrive.loaded &&
+                !loadingDrives.current.includes(defaultDrive.url)
+            ) {
+                const isDriveAlreadyAdded = documentDrives.some(drive => {
+                    return drive.state.local.triggers.some(
+                        trigger => trigger.data?.url === defaultDrive.url,
                     );
+                });
 
-                    drivesToDelete.push({
-                        id: loadedDrive.state.global.id,
-                        url: trigger?.data?.url,
-                    });
-                }
-            }
-            if (drivesToDelete.length > 0) {
-                const deletedUrls = drivesToDelete
-                    .filter(drive => drive.url)
-                    .map(drive => drive.url);
-                try {
-                    await Promise.all(
-                        drivesToDelete.map(drive => deleteDrive(drive.id)),
-                    );
-
+                if (isDriveAlreadyAdded) {
                     setConfig(conf => ({
                         ...conf,
-                        defaultDrives: (conf.defaultDrives || []).filter(
-                            drive => !deletedUrls.includes(drive.url),
-                        ),
+                        defaultDrives: [
+                            ...(conf.defaultDrives || []).filter(
+                                drive => drive.url !== defaultDrive.url,
+                            ),
+                            { ...defaultDrive, loaded: true },
+                        ],
                     }));
-                    location.reload();
-                } catch (e) {
-                    console.error(e);
+
+                    return;
                 }
+
+                loadingDrives.current.push(defaultDrive.url);
+
+                addRemoteDrive(defaultDrive.url, {
+                    sharingType: 'PUBLIC',
+                    availableOffline: true,
+                    listeners: [
+                        {
+                            block: true,
+                            callInfo: {
+                                data: defaultDrive.url,
+                                name: 'switchboard-push',
+                                transmitterType: 'SwitchboardPush',
+                            },
+                            filter: {
+                                branch: ['main'],
+                                documentId: ['*'],
+                                documentType: ['*'],
+                                scope: ['global'],
+                            },
+                            label: 'Switchboard Sync',
+                            listenerId: '1',
+                            system: true,
+                        },
+                    ],
+                    triggers: [],
+                    pullInterval: 10000,
+                })
+                    .then(() =>
+                        setConfig(conf => ({
+                            ...conf,
+                            defaultDrives: [
+                                ...(conf.defaultDrives || []).filter(
+                                    drive => drive.url !== defaultDrive.url,
+                                ),
+                                { ...defaultDrive, loaded: true },
+                            ],
+                        })),
+                    )
+                    .catch(logger.error)
+                    .finally(() => {
+                        loadingDrives.current = loadingDrives.current.filter(
+                            url => url !== defaultDrive.url,
+                        );
+                    });
             }
         }
-
-        ArbGrantsDeleteOldDrives()
-            .then(() => {
-                for (const defaultDrive of defaultDrives) {
-                    if (
-                        documentDrivesStatus === 'LOADED' &&
-                        !defaultDrive.loaded &&
-                        !loadingDrives.current.includes(defaultDrive.url)
-                    ) {
-                        const isDriveAlreadyAdded = documentDrives.some(
-                            drive => {
-                                return drive.state.local.triggers.some(
-                                    trigger =>
-                                        trigger.data?.url === defaultDrive.url,
-                                );
-                            },
-                        );
-
-                        if (isDriveAlreadyAdded) {
-                            setConfig(conf => ({
-                                ...conf,
-                                defaultDrives: [
-                                    ...(conf.defaultDrives || []).filter(
-                                        drive => drive.url !== defaultDrive.url,
-                                    ),
-                                    { ...defaultDrive, loaded: true },
-                                ],
-                            }));
-
-                            return;
-                        }
-
-                        loadingDrives.current.push(defaultDrive.url);
-
-                        addRemoteDrive(defaultDrive.url, {
-                            sharingType: 'PUBLIC',
-                            availableOffline: true,
-                            listeners: [
-                                {
-                                    block: true,
-                                    callInfo: {
-                                        data: defaultDrive.url,
-                                        name: 'switchboard-push',
-                                        transmitterType: 'SwitchboardPush',
-                                    },
-                                    filter: {
-                                        branch: ['main'],
-                                        documentId: ['*'],
-                                        documentType: ['*'],
-                                        scope: ['global'],
-                                    },
-                                    label: 'Switchboard Sync',
-                                    listenerId: '1',
-                                    system: true,
-                                },
-                            ],
-                            triggers: [],
-                            pullInterval: 3000,
-                        })
-                            .then(() =>
-                                setConfig(conf => ({
-                                    ...conf,
-                                    defaultDrives: [
-                                        ...(conf.defaultDrives || []).filter(
-                                            drive =>
-                                                drive.url !== defaultDrive.url,
-                                        ),
-                                        { ...defaultDrive, loaded: true },
-                                    ],
-                                })),
-                            )
-                            .catch(console.error)
-                            .finally(() => {
-                                loadingDrives.current =
-                                    loadingDrives.current.filter(
-                                        url => url !== defaultDrive.url,
-                                    );
-                            });
-                    }
-                }
-            })
-            .catch(console.error);
     }, [documentDrives, defaultDrives, documentDrivesStatus]);
 
     return loadingDrives.current.length > 0;
