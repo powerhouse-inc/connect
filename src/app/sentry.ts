@@ -33,6 +33,8 @@ function initSenty() {
             'User is not allowed to create files',
             'User is not allowed to move documents',
             'The user aborted a request.',
+            'ChainDoesNotSupportContract',
+            'ensUniversalResolver',
         ],
         tracesSampleRate: 1.0,
         replaysSessionSampleRate: 0.1,
