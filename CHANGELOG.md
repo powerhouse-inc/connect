@@ -1,3 +1,21 @@
+# [1.0.0-next.8](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.7...v1.0.0-next.8) (2024-08-16)
+
+
+### Bug Fixes
+
+* fixes undefined this in logger methods ([d5a8fac](https://github.com/powerhouse-inc/document-model-electron/commit/d5a8face9f25e54cf1bd51c9118db1fff80394b0))
+* parse renown base url ([160b4df](https://github.com/powerhouse-inc/document-model-electron/commit/160b4df770bd2c0e181b69aa68c01feba101b173))
+
+
+### Features
+
+* added browser refresh when a new version of connect is deployed ([0208c62](https://github.com/powerhouse-inc/document-model-electron/commit/0208c62b20dc3b9c0a9aa9845426c803b3e9d57e))
+* added drive operations context ([0c9d5fe](https://github.com/powerhouse-inc/document-model-electron/commit/0c9d5fee4b79d387c985ecd3ee755f0ae83fe399))
+* fix fix-urlBranchMap ([aeadba1](https://github.com/powerhouse-inc/document-model-electron/commit/aeadba1524bf31ed04b9a44b6de57a32cfdec0c3))
+* update design-system and document-model-libs ver ([78c2745](https://github.com/powerhouse-inc/document-model-electron/commit/78c2745394a6d0ae1508e71ef8284e7d4c7711e7))
+* upload sourcemaps to sentry ([47190fa](https://github.com/powerhouse-inc/document-model-electron/commit/47190faeda45bdad8250420bee4cbe1b546c0dd5))
+* use pkg version instead of random ver ([c2255c9](https://github.com/powerhouse-inc/document-model-electron/commit/c2255c9c9830d285d23e798aa0d799a396e2bb7b))
+
 # [1.0.0-next.7](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.6...v1.0.0-next.7) (2024-08-12)
 
 
