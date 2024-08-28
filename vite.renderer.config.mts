@@ -1,13 +1,34 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import jotaiDebugLabel from 'jotai/babel/plugin-debug-label';
 import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 import path from 'path';
 import { HtmlTagDescriptor, PluginOption, defineConfig, loadEnv } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import svgr from 'vite-plugin-svgr';
+import pkg from './package.json';
 
 import clientConfig from './client.config';
+
+const appVersion = pkg.version;
+
+const generateVersionPlugin = (hardRefresh = false) => {
+    return {
+        name: 'generate-version',
+        closeBundle() {
+            const versionManifest = {
+                version: appVersion,
+                requiresHardRefresh: hardRefresh,
+            };
+
+            fs.writeFileSync(
+                path.join('dist', 'version.json'),
+                JSON.stringify(versionManifest, null, 2),
+            );
+        },
+    };
+};
 
 export default defineConfig(({ mode }) => {
     const isProd = mode === 'production';
@@ -34,6 +55,7 @@ export default defineConfig(({ mode }) => {
                 ],
             },
         }),
+        generateVersionPlugin(isProd ? requiresHardRefresh : false),
     ];
 
     const authToken = process.env.SENTRY_AUTH_TOKEN;
@@ -53,6 +75,7 @@ export default defineConfig(({ mode }) => {
     return {
         define: {
             'process.env': {
+                APP_VERSION: appVersion,
                 REQUIRES_HARD_REFRESH: isProd ? requiresHardRefresh : false,
             },
         },

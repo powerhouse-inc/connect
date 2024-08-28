@@ -30,6 +30,7 @@ export const useLoadDefaultDrives = () => {
     const loadingDrives = useRef<string[]>([]);
     const {
         addRemoteDrive,
+        deleteDrive,
         documentDrives,
         documentDrivesStatus,
         clearStorage,
@@ -59,6 +60,22 @@ export const useLoadDefaultDrives = () => {
         ) {
             void resetDefaultDrive();
             return;
+        }
+
+        // if there is a stored default drive that is not part of the configured
+        // default drives then deletes it from the local storage
+        for (const drive of defaultDrives) {
+            const isStillDefault = defaultConfig.defaultDrives?.find(
+                d => d.url === drive.url,
+            );
+            if (!isStillDefault) {
+                setConfig(conf => ({
+                    ...conf,
+                    defaultDrives: conf.defaultDrives?.filter(
+                        defaultDrive => drive.url !== defaultDrive?.url,
+                    ),
+                }));
+            }
         }
 
         for (const defaultDrive of defaultDrives) {
@@ -131,6 +148,21 @@ export const useLoadDefaultDrives = () => {
                             url => url !== defaultDrive.url,
                         );
                     });
+            }
+        }
+
+        // if there is a loaded drive that is not part of the default
+        // drives then deletes it
+        for (const documentDrive of documentDrives) {
+            const isDefaultDrive = defaultConfig.defaultDrives?.find(
+                defaultDrive => {
+                    return documentDrive.state.local.triggers.some(
+                        trigger => trigger.data?.url === defaultDrive.url,
+                    );
+                },
+            );
+            if (!isDefaultDrive) {
+                deleteDrive(documentDrive.state.global.id).catch(logger.error);
             }
         }
     }, [documentDrives, defaultDrives, documentDrivesStatus]);
