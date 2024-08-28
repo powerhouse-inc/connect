@@ -7,6 +7,7 @@ import {
 } from '@powerhousedao/design-system';
 import { useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useInitialLoadingStatus } from './useInitialLoadingStatus';
 
 type RouteParams = {
     driveId?: string;
@@ -32,7 +33,7 @@ function buildPathname(selectedNodePath: UiNode[]) {
 }
 
 function makeDriveNodeUrlComponent(driveNode: UiDriveNode) {
-    const component = driveNode.slug || driveNode.name || driveNode.id;
+    const component = driveNode.slug || driveNode.id || driveNode.name;
 
     return `/d/${encodeURIComponent(component)}`;
 }
@@ -41,7 +42,9 @@ function getSelectedNodeFromPathname(
     driveNodes: (UiDriveNode | null)[],
     driveIdFromPathname: string | undefined,
     nodeNamesFromPathname: string | undefined,
+    initialLoading: boolean,
 ) {
+    if (initialLoading) return null;
     if (!driveIdFromPathname) {
         return driveNodes[0];
     }
@@ -89,12 +92,18 @@ export const useNodeNavigation = () => {
     const params = useParams<RouteParams>();
     const { driveNodes, selectedNode, selectedNodePath, setSelectedNode } =
         useUiNodesContext();
+    const { getDriveInitialLoadingStatus } = useInitialLoadingStatus();
     const driveIdFromPathname = params.driveId;
     const nodeNamesFromPathname = params['*'];
+
+    const initialLoading =
+        getDriveInitialLoadingStatus(driveIdFromPathname) !== 'READY';
+
     const selectedNodeFromPathname = getSelectedNodeFromPathname(
         driveNodes,
         driveIdFromPathname,
         nodeNamesFromPathname,
+        initialLoading,
     );
     const selectedNodePathname = buildPathname(selectedNodePath);
 
@@ -108,10 +117,16 @@ export const useNodeNavigation = () => {
     // on first load, set the selected node from the pathname
     // defaults to setting the first drive node if no drive node is found
     useEffect(() => {
+        if (initialLoading) return;
         if (selectedNode || !selectedNodeFromPathname) return;
 
         setSelectedNode(selectedNodeFromPathname);
-    }, [selectedNode, selectedNodeFromPathname, setSelectedNode]);
+    }, [
+        selectedNode,
+        selectedNodeFromPathname,
+        setSelectedNode,
+        initialLoading,
+    ]);
 
     // respond to changes in the url (browser back and forward buttons)
     // update the selected node accordingly
@@ -120,6 +135,7 @@ export const useNodeNavigation = () => {
             driveNodes,
             driveIdFromPathname,
             nodeNamesFromPathname,
+            initialLoading,
         );
 
         if (!selectedNodeFromPathname) return;
@@ -130,5 +146,6 @@ export const useNodeNavigation = () => {
         driveIdFromPathname,
         nodeNamesFromPathname,
         setSelectedNode,
+        initialLoading,
     ]);
 };

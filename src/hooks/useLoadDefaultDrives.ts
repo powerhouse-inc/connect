@@ -3,6 +3,7 @@ import { logger } from 'src/services/logger';
 import { useDocumentDriveServer } from './useDocumentDriveServer';
 import { useFeatureFlag } from './useFeatureFlags';
 import defaultConfig from './useFeatureFlags/default-config';
+import { useInitialLoadingStatus } from './useInitialLoadingStatus';
 
 type DefaultDrive = {
     url: string;
@@ -38,6 +39,7 @@ export const useLoadDefaultDrives = () => {
         setConfig,
         config: { defaultDrives },
     } = useFeatureFlag();
+    const { setDriveInitialLoadingStatus } = useInitialLoadingStatus();
 
     async function resetDefaultDrive() {
         await clearStorage();
@@ -80,12 +82,30 @@ export const useLoadDefaultDrives = () => {
                             ...(conf.defaultDrives || []).filter(
                                 drive => drive.url !== defaultDrive.url,
                             ),
-                            { ...defaultDrive, loaded: true },
+                            {
+                                ...defaultDrive,
+                                loaded: true,
+                            },
                         ],
                     }));
 
+                    // if the drive is already added, we set the initialSyncStatus as 'SYNCING'
+                    setDriveInitialLoadingStatus(defaultDrive.url, 'SYNCING');
                     return;
                 }
+
+                setConfig(conf => ({
+                    ...conf,
+                    defaultDrives: [
+                        ...(conf.defaultDrives || []).filter(
+                            drive => drive.url !== defaultDrive.url,
+                        ),
+                        {
+                            ...defaultDrive,
+                            loading: true,
+                        },
+                    ],
+                }));
 
                 loadingDrives.current.push(defaultDrive.url);
 
@@ -114,26 +134,51 @@ export const useLoadDefaultDrives = () => {
                     triggers: [],
                     pullInterval: 3000,
                 })
-                    .then(() =>
+                    .then(() => {
                         setConfig(conf => ({
                             ...conf,
                             defaultDrives: [
                                 ...(conf.defaultDrives || []).filter(
                                     drive => drive.url !== defaultDrive.url,
                                 ),
-                                { ...defaultDrive, loaded: true },
+                                {
+                                    ...defaultDrive,
+                                    loaded: true,
+                                },
                             ],
-                        })),
-                    )
-                    .catch(logger.error)
+                        }));
+
+                        // if the drive is added successfully, we set the initialSyncStatus as 'SYNCING'
+                        // (sync starts after the drive is added)
+                        setDriveInitialLoadingStatus(
+                            defaultDrive.url,
+                            'SYNCING',
+                        );
+                    })
+                    .catch(err => {
+                        logger.error(err);
+                        // if the drive fails to load, we set the initialSyncStatus as 'READY'
+                        // (sync will not be executed because the drive failed to be added)
+                        setDriveInitialLoadingStatus(defaultDrive.url, 'READY');
+                    })
                     .finally(() => {
+                        setConfig(conf => ({
+                            ...conf,
+                            defaultDrives: [
+                                ...(conf.defaultDrives || []).filter(
+                                    drive => drive.url !== defaultDrive.url,
+                                ),
+                                { ...defaultDrive, loading: false },
+                            ],
+                        }));
+
                         loadingDrives.current = loadingDrives.current.filter(
                             url => url !== defaultDrive.url,
                         );
                     });
             }
         }
-    }, [documentDrives, defaultDrives, documentDrivesStatus]);
+    }, [documentDrives.length, documentDrivesStatus]);
 
     return loadingDrives.current.length > 0;
 };

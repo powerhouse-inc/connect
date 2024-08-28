@@ -1,4 +1,4 @@
-import { Breadcrumbs, FILE } from '@powerhousedao/design-system';
+import { Breadcrumbs, FILE, LoadingScreen } from '@powerhousedao/design-system';
 import { Document, DocumentModel, Operation } from 'document-model/document';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import FolderView from 'src/components/folder-view';
 import { useModal } from 'src/components/modal';
 import { SearchBar } from 'src/components/search-bar';
 import { useConnectConfig } from 'src/hooks/useConnectConfig';
+import { useLoadingScreen } from 'src/hooks/useLoadingScreen';
 import { useNodeNavigation } from 'src/hooks/useNodeNavigation';
 import { useUiNodes } from 'src/hooks/useUiNodes';
 import { usePreloadEditor } from 'src/store/editor';
@@ -44,6 +45,8 @@ const Content = () => {
     } = useUiNodes();
     const { showModal } = useModal();
     const preloadEditor = usePreloadEditor();
+    const { showLoadingScreen, loadingComponent } = useLoadingScreen();
+
     useNodeNavigation();
 
     // preload document editors
@@ -151,6 +154,11 @@ const Content = () => {
             className="flex h-full flex-col overflow-auto bg-gray-100 p-6"
             id="content-view"
         >
+            <LoadingScreen
+                size={150}
+                showLoadingScreen={showLoadingScreen}
+                loadingComponent={loadingComponent}
+            />
             {selectedDocument ? (
                 <div className="flex-1 rounded-2xl bg-gray-50 p-4">
                     <DocumentEditor

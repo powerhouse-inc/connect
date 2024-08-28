@@ -1,13 +1,13 @@
-import { DefaultEditorLoader } from '@powerhousedao/design-system';
-import { ReactNode } from 'react';
+import { useEffect } from 'react';
+import { useLoadingScreen } from 'src/hooks/useLoadingScreen';
 
-type Props = {
-    customEditorLoader?: ReactNode;
-};
-export function EditorLoader(props: Props) {
-    const { customEditorLoader } = props;
+export function EditorLoader() {
+    const { setShowLoadingScreen } = useLoadingScreen();
 
-    if (customEditorLoader) return <>{customEditorLoader}</>;
+    useEffect(() => {
+        setShowLoadingScreen(true);
+        return () => setShowLoadingScreen(false);
+    }, [setShowLoadingScreen]);
 
-    return <DefaultEditorLoader />;
+    return null;
 }

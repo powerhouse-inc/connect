@@ -162,7 +162,8 @@ export function useUiNodes() {
 
     const makeUiDriveNodes = useCallback(
         async (documentDrives: DocumentDriveDocument[]) => {
-            return Promise.all(documentDrives.map(makeUiDriveNode));
+            const drives = Promise.all(documentDrives.map(makeUiDriveNode));
+            return drives;
         },
         [makeUiDriveNode],
     );

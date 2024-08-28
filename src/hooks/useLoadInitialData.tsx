@@ -15,6 +15,7 @@ import { useUiNodes } from 'src/hooks/useUiNodes';
 import { DefaultDocumentDriveServer as server } from 'src/utils/document-drive-server';
 import { useClientErrorHandler } from './useClientErrorHandler';
 import { useDocumentDrives } from './useDocumentDrives';
+import { useInitialLoadingStatus } from './useInitialLoadingStatus';
 import { useLoadDefaultDrives } from './useLoadDefaultDrives';
 import { isLatestVersion } from './utils';
 
@@ -31,6 +32,8 @@ export const useLoadInitialData = () => {
     const drivesWithError = useRef<UiDriveNode[]>([]);
     const [, , serverSubscribeUpdates] = useDocumentDrives(server);
     const clientErrorHandler = useClientErrorHandler();
+    const { initialLoadingStatus, setDriveInitialLoadingStatus } =
+        useInitialLoadingStatus();
 
     useLoadDefaultDrives();
 
@@ -55,6 +58,34 @@ export const useLoadInitialData = () => {
         const unsubscribe = serverSubscribeUpdates(clientErrorHandler);
         return unsubscribe;
     }, [serverSubscribeUpdates, documentDrives, clientErrorHandler]);
+
+    const updateInitialSyncStatus = useCallback(
+        (uiDriveNodes: UiDriveNode[], docDrives: DocumentDriveDocument[]) => {
+            const syncedDrivesIds = uiDriveNodes
+                .filter(uiDrive => uiDrive.syncStatus !== 'SYNCING')
+                .map(uiDrive => uiDrive.id);
+
+            const syncedDocumentDrives = docDrives.filter(docDrive =>
+                syncedDrivesIds.includes(docDrive.state.global.id),
+            );
+
+            const driveUrls = syncedDocumentDrives.reduce<string[]>(
+                (acc, docDrive) => {
+                    const urlTriggers = docDrive.state.local.triggers
+                        .filter(trigger => trigger.data?.url)
+                        .map(trigger => trigger.data?.url!);
+
+                    return [...acc, ...urlTriggers];
+                },
+                [],
+            );
+
+            for (const driveUrl of driveUrls) {
+                setDriveInitialLoadingStatus(driveUrl, 'READY');
+            }
+        },
+        [],
+    );
 
     const checkDrivesErrors = useCallback(
         async (driveNodes: UiDriveNode[], t: TFunction) => {
@@ -121,6 +152,7 @@ export const useLoadInitialData = () => {
         async (documentDrives: DocumentDriveDocument[]) => {
             const uiDriveNodes = await makeUiDriveNodes(documentDrives);
             setDriveNodes(uiDriveNodes);
+            updateInitialSyncStatus(uiDriveNodes, documentDrives);
         },
         [makeUiDriveNodes, setDriveNodes],
     );

@@ -9,8 +9,8 @@ const disabledEditors = DISABLED_EDITORS?.split(',');
 
 export interface FeatureFlag {
     defaultDrives?: {
-        url: string;
-        loaded: boolean;
+        url: string; // url of the remote drive
+        loaded: boolean; // whether the drive has been loaded or not
     }[];
     editors: {
         enabledEditors?: '*' | string[];
