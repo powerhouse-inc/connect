@@ -1,6 +1,6 @@
 import type { IDocumentDriveServer } from 'document-drive/server';
 import { DocumentDriveDocument } from 'document-model-libs/document-drive';
-import { OperationScope } from 'document-model/document';
+import { Document, OperationScope } from 'document-model/document';
 import { atom, useAtom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { useCallback, useMemo } from 'react';
@@ -12,17 +12,17 @@ const documentDrivesAtom = atom(
     new Map<IDocumentDriveServer, DocumentDriveDocument[]>(),
 );
 
-function driveToHash(drive: DocumentDriveDocument): string {
-    return Object.keys(drive.operations)
+export function documentToHash(document: Document): string {
+    return Object.keys(document.operations)
         .map(
             key =>
-                `${key}:d${drive.operations[key as OperationScope].at(-1)?.hash}`,
+                `${key}:d${document.operations[key as OperationScope].at(-1)?.hash}`,
         )
         .join(':');
 }
 
-function drivesToHash(drives: DocumentDriveDocument[]): string {
-    return drives.map(driveToHash).join('&');
+export function drivesToHash(drives: DocumentDriveDocument[]): string {
+    return drives.map(documentToHash).join('&');
 }
 
 // creates a derived atom that encapsulates the Map of Document Drives
@@ -49,6 +49,9 @@ export const documentDrivesInitializedMapAtomFamily = atomFamily(() =>
     atom<IDrivesState>('INITIAL'),
 );
 
+const refreshDelay = 100;
+let refreshTimeoutId: number | null = null;
+
 // returns an array with the document drives of a
 // server and a method to fetch the document drives
 export function useDocumentDrives(server: IDocumentDriveServer) {
@@ -57,24 +60,33 @@ export function useDocumentDrives(server: IDocumentDriveServer) {
         useMemo(readWriteDocumentDrivesAtom(server), [server]),
     );
 
-    const refreshDocumentDrives = useCallback(async () => {
-        const documentDrives: DocumentDriveDocument[] = [];
-        try {
-            const driveIds = await server.getDrives();
-            for (const id of driveIds) {
+    const refreshDocumentDrives = useCallback(() => {
+        if (refreshTimeoutId) {
+            clearTimeout(refreshTimeoutId);
+        }
+        return new Promise((resolve, reject) => {
+            refreshTimeoutId = setTimeout(async () => {
+                const documentDrives: DocumentDriveDocument[] = [];
                 try {
-                    const drive = await server.getDrive(id);
-                    documentDrives.push(drive);
+                    const driveIds = await server.getDrives();
+                    for (const id of driveIds) {
+                        try {
+                            const drive = await server.getDrive(id);
+                            documentDrives.push(drive);
+                        } catch (error) {
+                            logger.error(error);
+                        }
+                    }
                 } catch (error) {
                     logger.error(error);
+                    reject(error as Error);
+                } finally {
+                    resolve(documentDrives);
+                    setDocumentDrives(documentDrives);
                 }
-            }
-        } catch (error) {
-            logger.error(error);
-        } finally {
-            setDocumentDrives(documentDrives);
-        }
-    }, [server]);
+            }, refreshDelay) as unknown as number;
+        });
+    }, []);
 
     // if the server has not been initialized then
     // fetches the drives for the first time
@@ -100,9 +112,9 @@ export function useDocumentDrives(server: IDocumentDriveServer) {
                     await refreshDocumentDrives();
                 },
             );
-            const unsub2 = server.on('strandUpdate', () =>
-                refreshDocumentDrives(),
-            );
+            const unsub2 = server.on('strandUpdate', async () => {
+                await refreshDocumentDrives();
+            });
             const unsubOnSyncError = server.on(
                 'clientStrandsError',
                 clientErrorhandler.strandsErrorHandler,
