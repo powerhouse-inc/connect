@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import config from 'connect-config';
 import React from 'react';
 import {
     createRoutesFromChildren,
@@ -6,8 +7,6 @@ import {
     useLocation,
     useNavigationType,
 } from 'react-router-dom';
-
-import config from '../../connect.config';
 
 function initSenty() {
     if (!config.sentry.dsn || config.sentry.dsn === '') {
@@ -17,6 +16,7 @@ function initSenty() {
     Sentry.init({
         dsn: config.sentry.dsn,
         environment: config.sentry.env,
+        release: import.meta.env.SENTRY_RELEASE,
         integrations: [
             Sentry.extraErrorDataIntegration({ depth: 5 }),
             Sentry.reactRouterV6BrowserTracingIntegration({
