@@ -1,3 +1,49 @@
+# [1.0.0-next.9](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.8...v1.0.0-next.9) (2024-09-05)
+
+
+### Bug Fixes
+
+* activate service worker in prod ([ef00ce3](https://github.com/powerhouse-inc/document-model-electron/commit/ef00ce3cc2060479fcb5f0484021a6fa7f931e65))
+* added PH_CONNECT_ROUTER_BASENAME env variable to e2e github action ([1e104e7](https://github.com/powerhouse-inc/document-model-electron/commit/1e104e7d93f64df8a001e33a02143efd81d089b4))
+* broken cypress tests ([cc9af0a](https://github.com/powerhouse-inc/document-model-electron/commit/cc9af0ad97b3bf93e488b02dd65e1e87201112a4))
+* fix merge conflicts ([cad5a8f](https://github.com/powerhouse-inc/document-model-electron/commit/cad5a8f52fbb00226e1d76e8516bdb411a72defc))
+* fix service worker build ([38e0e92](https://github.com/powerhouse-inc/document-model-electron/commit/38e0e927fde54711f5c327d66a43907510b2dcc5))
+* fixed bundle location ([fb12b37](https://github.com/powerhouse-inc/document-model-electron/commit/fb12b37e76b9be827b2c45affbb6efcffc3b7f53))
+* fixed outdated config import ([beb5d71](https://github.com/powerhouse-inc/document-model-electron/commit/beb5d711a527090fdde84085295a6e775594c436))
+* merge conflicts ([cfee034](https://github.com/powerhouse-inc/document-model-electron/commit/cfee034dc84952f070496c2234a591e29c6ed376))
+* moved service-worker script to assets folder ([900b11c](https://github.com/powerhouse-inc/document-model-electron/commit/900b11c3d0be4dcf88fb8a8aaff7c2234930b0ca))
+* prevent sentry code injection ([85e4f7f](https://github.com/powerhouse-inc/document-model-electron/commit/85e4f7fdcf42276b6a104a4774a5bf89006cba6a))
+* remove file ext when importing document ([fc926ec](https://github.com/powerhouse-inc/document-model-electron/commit/fc926ec8d0ddb27b93d139af6b68a65691f9c8c2))
+* service worker app version ([1e63c59](https://github.com/powerhouse-inc/document-model-electron/commit/1e63c593f39bff4e83661d461ae67c68d2e75a79))
+* test env access in config ([e9275a9](https://github.com/powerhouse-inc/document-model-electron/commit/e9275a9b2012e8902436fc369ebf8dad468fac92))
+* use routerBasename to get service worker script path ([41b4b8c](https://github.com/powerhouse-inc/document-model-electron/commit/41b4b8c70ae66de89ae98c54626f10e0775d56c5))
+
+
+### Features
+
+* added env vars for connect ([d4567a4](https://github.com/powerhouse-inc/document-model-electron/commit/d4567a4b1b4ce4d4b15dd8f12116b995c5df4dd2))
+* added PH_CONNECT_DEFAULT_DRIVES_URL env to e2e github action ([b308b03](https://github.com/powerhouse-inc/document-model-electron/commit/b308b03be38067e3dfd563b02707349208224c46))
+* added service-worker.ts ([fa97092](https://github.com/powerhouse-inc/document-model-electron/commit/fa9709256a7e89f6d090ae671138f08473994838))
+* build service worker as part of the bundle ([50515ae](https://github.com/powerhouse-inc/document-model-electron/commit/50515aec4168d90c1c1572e7bfa52dc808b1a6c9))
+* check if nginx.conf is valid ([ab70580](https://github.com/powerhouse-inc/document-model-electron/commit/ab70580c9fc11af21e0537a821585680385767a9))
+* entrypoint script cleanup ([82c2c95](https://github.com/powerhouse-inc/document-model-electron/commit/82c2c9526a50dd79513dc8772863bdd8aef284c3))
+* fix service worker build ([9b0c99a](https://github.com/powerhouse-inc/document-model-electron/commit/9b0c99a151323af4a08d0d9a901920edb134ed4f))
+* fixed entrypoint script ([ffe04e7](https://github.com/powerhouse-inc/document-model-electron/commit/ffe04e761213640e2487e1da8f22639c873bcbc5))
+* fixed env vars ([3951036](https://github.com/powerhouse-inc/document-model-electron/commit/3951036c1dcc9c8728c7c33f130f1f67d8cee504))
+* fixed lint warning ([9c2bf2c](https://github.com/powerhouse-inc/document-model-electron/commit/9c2bf2cf24a626e19672c4795697cc079d35ee88))
+* fixed version fetch and added env var for version check interval ([415e3a4](https://github.com/powerhouse-inc/document-model-electron/commit/415e3a424e4932c10ef7829eee0246699f48209c))
+* handle syncUnitStatus not found error ([c84db48](https://github.com/powerhouse-inc/document-model-electron/commit/c84db4814175aeb04afabf475be84d22cb55bf24))
+* moved connect config to the src folder so it has access to the env vars ([84d4af7](https://github.com/powerhouse-inc/document-model-electron/commit/84d4af738b462175d6f6e59a09d200046e23793d))
+* pass build args as strings ([940a0f1](https://github.com/powerhouse-inc/document-model-electron/commit/940a0f16a6770c88095e0e151959fe3de1c5b275))
+* preserve all remote drives if no default drives config is passed ([af45238](https://github.com/powerhouse-inc/document-model-electron/commit/af4523898d70b8eb79b6c34746cf1aaa15f91ee7))
+* remove default drives info from connect + add default drives to reactor config ([1483e82](https://github.com/powerhouse-inc/document-model-electron/commit/1483e82d71baeafb5b660595c8857a7343d87dca))
+* remove escape chars from dockerfile entrypoint ([58516f3](https://github.com/powerhouse-inc/document-model-electron/commit/58516f37c5c6c2a901d591600b04488ae17f938f))
+* run e2e tests when a PR is open ([a6682b6](https://github.com/powerhouse-inc/document-model-electron/commit/a6682b6cfd9476fd49dfe1c8738985a0078b98f9))
+* scope the service worker to the basepath ([dbca2b4](https://github.com/powerhouse-inc/document-model-electron/commit/dbca2b46a418035794cd931d3b89f229bb34a04b))
+* set package version as sentry release ([29ba7fe](https://github.com/powerhouse-inc/document-model-electron/commit/29ba7fecadd8ad3794c2abb22dca8ae79b7a70ae))
+* use script as entrypoint ([2652d51](https://github.com/powerhouse-inc/document-model-electron/commit/2652d51a0a9342dc28e4f8c52ee06280d0d555da))
+* use script instead of inline nginx config ([39b0091](https://github.com/powerhouse-inc/document-model-electron/commit/39b00916965d8834be33b7eb9c24a4ae4162c267))
+
 # [1.0.0-next.8](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.7...v1.0.0-next.8) (2024-08-16)
 
 ### Bug Fixes
