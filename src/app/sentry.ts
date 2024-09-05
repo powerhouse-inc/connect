@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import config from 'connect-config';
 import React from 'react';
 import {
     createRoutesFromChildren,
@@ -7,14 +8,15 @@ import {
     useNavigationType,
 } from 'react-router-dom';
 
-import config from '../../connect.config';
-
 function initSenty() {
     if (!config.sentry.dsn || config.sentry.dsn === '') {
         return;
     }
 
+    const release = import.meta.env.SENTRY_RELEASE;
+
     Sentry.init({
+        release,
         dsn: config.sentry.dsn,
         environment: config.sentry.env,
         integrations: [
