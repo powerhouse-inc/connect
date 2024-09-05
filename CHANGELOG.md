@@ -1,3 +1,10 @@
+# [1.0.0-next.10](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.9...v1.0.0-next.10) (2024-09-05)
+
+
+### Features
+
+* update default drive ([442752a](https://github.com/powerhouse-inc/document-model-electron/commit/442752a632e8751a9add3aadf276b6ed36c2f95e))
+
 # [1.0.0-next.9](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.8...v1.0.0-next.9) (2024-09-05)
 
 
