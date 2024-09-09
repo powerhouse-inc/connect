@@ -1,4 +1,27 @@
-# [1.0.0-next.7](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.6...v1.0.0-next.7) (2024-08-12)
+# [1.0.0-dev.103](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.102...v1.0.0-dev.103) (2024-09-09)
+
+
+### Features
+
+* updated dependencies ([e6c88eb](https://github.com/powerhouse-inc/document-model-electron/commit/e6c88eb0b07c4fa9478987d43ae16c814b97bf7c))
+
+# [1.0.0-dev.102](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.101...v1.0.0-dev.102) (2024-09-06)
+
+
+### Bug Fixes
+
+* revert nginx docker image change ([174b57c](https://github.com/powerhouse-inc/document-model-electron/commit/174b57cab2a063ab97614c10ec31e98406cdae65))
+
+# [1.0.0-dev.101](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.100...v1.0.0-dev.101) (2024-09-06)
+
+
+### Features
+
+* activated brotli on nginx ([835cb76](https://github.com/powerhouse-inc/document-model-electron/commit/835cb760069d5753c46a0027397b2b2529169f9e))
+* updated nginx docker image ([f87d5c8](https://github.com/powerhouse-inc/document-model-electron/commit/f87d5c8244a396a87f1361a71565679a70372363))
+
+# [1.0.0-dev.100](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.99...v1.0.0-dev.100) (2024-09-04)
+
 
 ### Features
 
