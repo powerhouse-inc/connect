@@ -1,4 +1,46 @@
-# [1.0.0-next.10](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.9...v1.0.0-next.10) (2024-09-05)
+# [1.0.0-next.10](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.104...v1.0.0-dev.105) (2024-09-12)
+
+
+### Features
+
+* added support for read mode ([146c59e](https://github.com/powerhouse-inc/document-model-electron/commit/146c59eb5c56365e36cb28493a415ae531054e57))
+* allow all when no allow list is defined ([94ae965](https://github.com/powerhouse-inc/document-model-electron/commit/94ae965a6633635e3c55ba4079cd9ece1ab615e4))
+* only show editor loader for slow documents ([ff6b7d8](https://github.com/powerhouse-inc/document-model-electron/commit/ff6b7d8a86a5c89d4eaa52a442e3f244c18981af))
+* show loading editor while document is being fetched ([cfdfa01](https://github.com/powerhouse-inc/document-model-electron/commit/cfdfa01895e2b31dd027b2818c5761f56c23c2d7))
+* updated default drives handling ([0cdb778](https://github.com/powerhouse-inc/document-model-electron/commit/0cdb778f5721c031e24304505ca8ef4819304e11))
+* updated document drive ([4a511dd](https://github.com/powerhouse-inc/document-model-electron/commit/4a511dd320343bd5899eab2c7c9175af41629c3e))
+* updated document drive ([16c07e6](https://github.com/powerhouse-inc/document-model-electron/commit/16c07e641c7beafa4639b1caf0f5532ec2532fa6))
+
+# [1.0.0-dev.104](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.103...v1.0.0-dev.104) (2024-09-11)
+
+
+### Features
+
+* update document-model-libs and design-system ([a4e971b](https://github.com/powerhouse-inc/document-model-electron/commit/a4e971b09dba190f1cdf5fdbf9c75fc9e0400fe9))
+
+# [1.0.0-dev.103](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.102...v1.0.0-dev.103) (2024-09-09)
+
+
+### Features
+
+* updated dependencies ([e6c88eb](https://github.com/powerhouse-inc/document-model-electron/commit/e6c88eb0b07c4fa9478987d43ae16c814b97bf7c))
+
+# [1.0.0-dev.102](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.101...v1.0.0-dev.102) (2024-09-06)
+
+
+### Bug Fixes
+
+* revert nginx docker image change ([174b57c](https://github.com/powerhouse-inc/document-model-electron/commit/174b57cab2a063ab97614c10ec31e98406cdae65))
+
+# [1.0.0-dev.101](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.100...v1.0.0-dev.101) (2024-09-06)
+
+
+### Features
+
+* activated brotli on nginx ([835cb76](https://github.com/powerhouse-inc/document-model-electron/commit/835cb760069d5753c46a0027397b2b2529169f9e))
+* updated nginx docker image ([f87d5c8](https://github.com/powerhouse-inc/document-model-electron/commit/f87d5c8244a396a87f1361a71565679a70372363))
+
+# [1.0.0-dev.100](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.99...v1.0.0-dev.100) (2024-09-04)
 
 
 ### Features
