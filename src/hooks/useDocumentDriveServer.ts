@@ -38,8 +38,9 @@ import { useConnectCrypto, useConnectDid } from './useConnectCrypto';
 import { useDocumentDrives } from './useDocumentDrives';
 import { useUserPermissions } from './useUserPermissions';
 
-export const FILE_UPLOAD_OPERATIONS_CHUNK_SIZE =
-    parseInt(import.meta.env.FILE_UPLOAD_OPERATIONS_CHUNK_SIZE as string) || 50;
+export const FILE_UPLOAD_OPERATIONS_CHUNK_SIZE = parseInt(
+    (import.meta.env.FILE_UPLOAD_OPERATIONS_CHUNK_SIZE as string) || '50',
+);
 
 // TODO this should be added to the document model
 export interface SortOptions {
@@ -50,8 +51,11 @@ export function useDocumentDriveServer(
     server: IDocumentDriveServer | undefined = DefaultDocumentDriveServer,
 ) {
     const { isAllowedToCreateDocuments, isAllowedToEditDocuments } =
-        useUserPermissions();
-    const user = useUser();
+        useUserPermissions() || {
+            isAllowedToCreateDocuments: false,
+            isAllowedToEditDocuments: false,
+        };
+    const user = useUser() || undefined;
     const connectDid = useConnectDid();
     const { sign } = useConnectCrypto();
 
