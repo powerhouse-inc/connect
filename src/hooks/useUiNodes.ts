@@ -16,10 +16,12 @@ import {
     UiNode,
     useUiNodesContext,
 } from '@powerhousedao/design-system';
+import { ReadDrive } from 'document-drive';
 import { DocumentDriveDocument } from 'document-model-libs/document-drive';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useModal } from 'src/components/modal';
+import { useReadModeContext } from 'src/context/read-mode';
 import { useFileNodeDocument } from 'src/store/document-drive';
 import {
     useFilteredDocumentModels,
@@ -43,6 +45,7 @@ export function useUiNodes() {
         setSelectedNode,
         getParentNode,
     } = uiNodesContext;
+    const readModeContext = useReadModeContext();
     const documentDriveServer = useDocumentDriveServer();
     const {
         addFolder,
@@ -71,18 +74,29 @@ export function useUiNodes() {
     const fileNodeDocument = useFileNodeDocument({
         ...uiNodesContext,
         ...documentDriveServer,
+        ...readModeContext,
     });
 
     const makeUiDriveNode = useCallback(
-        async (drive: DocumentDriveDocument) => {
+        async (drive: DocumentDriveDocument | ReadDrive) => {
+            const isReadDrive = 'readContext' in drive;
             const { id, name, icon, slug } = drive.state.global;
-            const { sharingType: _sharingType, availableOffline } =
-                drive.state.local;
+            const { sharingType: _sharingType, availableOffline } = !isReadDrive
+                ? drive.state.local
+                : { sharingType: PUBLIC, availableOffline: false };
             const __sharingType = _sharingType?.toUpperCase();
             const sharingType = (
                 __sharingType === 'PRIVATE' ? LOCAL : __sharingType
             ) as SharingType;
-            const driveSyncStatus = await getSyncStatus(id, sharingType);
+            const driveSyncStatus = !isReadDrive
+                ? await getSyncStatus(id, sharingType)
+                : undefined;
+
+            // TODO: rempve this after integration in design-system
+            const normalizedDriveSyncStatus =
+                driveSyncStatus === 'INITIAL_SYNC'
+                    ? 'SYNCING'
+                    : driveSyncStatus;
 
             const driveNode: UiDriveNode = {
                 id,
@@ -92,7 +106,7 @@ export function useUiNodes() {
                 children: [],
                 nodeMap: {},
                 sharingType,
-                syncStatus: driveSyncStatus,
+                syncStatus: normalizedDriveSyncStatus,
                 availableOffline,
                 icon,
                 parentFolder: null,
@@ -106,7 +120,7 @@ export function useUiNodes() {
                     driveId: id,
                     parentFolder: n.parentFolder || id,
                     kind: n.kind.toUpperCase(),
-                    syncStatus: driveSyncStatus,
+                    syncStatus: normalizedDriveSyncStatus,
                     sharingType,
                 };
 
@@ -130,10 +144,20 @@ export function useUiNodes() {
 
             for await (const node of nodes) {
                 if (node.kind === FILE) {
-                    node.syncStatus = await getSyncStatus(
-                        node.synchronizationUnits[0].syncId,
-                        sharingType,
-                    );
+                    const fileSyncStatus = !isReadDrive
+                        ? await getSyncStatus(
+                              node.synchronizationUnits[0].syncId,
+                              sharingType,
+                          )
+                        : undefined;
+
+                    // TODO: rempve this after integration in design-system
+                    const normalizedFileSyncStatus =
+                        fileSyncStatus === 'INITIAL_SYNC'
+                            ? 'SYNCING'
+                            : fileSyncStatus;
+
+                    node.syncStatus = normalizedFileSyncStatus;
                 }
 
                 if (node.parentFolder === id) {
@@ -222,10 +246,13 @@ export function useUiNodes() {
             if (parentNode.kind === FILE) {
                 throw new Error('Cannot add file to a file');
             }
+
+            const fileName = file.name.replace(/\.zip$/gim, '');
+
             return await addFile(
                 file,
                 parentNode.driveId,
-                file.name,
+                fileName,
                 parentNode.id,
             );
         },

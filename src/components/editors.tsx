@@ -15,8 +15,8 @@ import { TUiNodes } from 'src/hooks/useUiNodes';
 import { useUndoRedoShortcuts } from 'src/hooks/useUndoRedoShortcuts';
 import { useUserPermissions } from 'src/hooks/useUserPermissions';
 import { logger } from 'src/services/logger';
-import { useDocumentModel } from 'src/store/document-model';
-import { useEditor } from 'src/store/editor';
+import { useGetDocumentModel } from 'src/store/document-model';
+import { useGetEditor } from 'src/store/editor';
 import { themeAtom } from 'src/store/theme';
 import { useUser } from 'src/store/user';
 import {
@@ -32,16 +32,25 @@ export type EditorProps<
     A extends Action = Action,
     LocalState = unknown,
 > = TUiNodes & {
-    document: Document<T, A, LocalState>;
+    document: Document<T, A, LocalState> | undefined;
     onExport: () => void;
     onAddOperation: (operation: Operation) => Promise<void>;
     onOpenSwitchboardLink?: () => Promise<void>;
     onChange?: (document: Document<T, A, LocalState>) => void;
 };
 
+function EditorError({ message }: { message: string }) {
+    return (
+        <div className="flex size-full items-center justify-center">
+            <h3 className="text-lg font-semibold">{message}</h3>
+        </div>
+    );
+}
+
 export function DocumentEditor(props: EditorProps) {
     const {
         selectedNode,
+        fileNodeDocument,
         selectedParentNode,
         document: initialDocument,
         setSelectedNode,
@@ -51,12 +60,24 @@ export function DocumentEditor(props: EditorProps) {
         onOpenSwitchboardLink,
     } = props;
     const [showRevisionHistory, setShowRevisionHistory] = useState(false);
-    const user = useUser();
+    const theme = useAtomValue(themeAtom);
+    const user = useUser() || undefined;
     const connectDid = useConnectDid();
     const { sign } = useConnectCrypto();
-    const documentModel = useDocumentModel(initialDocument.documentType);
-    const editor = useEditor(initialDocument.documentType);
-    const theme = useAtomValue(themeAtom);
+    const getDocumentModel = useGetDocumentModel();
+    const getEditor = useGetEditor();
+
+    const documentType = fileNodeDocument?.documentType;
+    const documentModel = useMemo(
+        () => (documentType ? getDocumentModel(documentType) : undefined),
+        [documentType, getDocumentModel],
+    );
+
+    const editor = useMemo(
+        () => (documentType ? getEditor(documentType) : undefined),
+        [documentType, getEditor],
+    );
+
     const [document, _dispatch, error] = useDocumentDispatch(
         documentModel?.reducer,
         initialDocument,
@@ -65,8 +86,10 @@ export function DocumentEditor(props: EditorProps) {
         () => ({ theme, user }),
         [theme, user],
     );
-    const { isAllowedToCreateDocuments, isAllowedToEditDocuments } =
-        useUserPermissions();
+    const userPermissions = useUserPermissions();
+
+    const isLoadingDocument =
+        fileNodeDocument?.status === 'LOADING' || !document;
     const isLoadingEditor =
         !!editor &&
         !!document &&
@@ -135,31 +158,35 @@ export function DocumentEditor(props: EditorProps) {
         setSelectedNode(selectedParentNode);
     }
 
+    if (fileNodeDocument?.status === 'ERROR') {
+        return <EditorError message={'Error loading document'} />;
+    }
+
+    if (isLoadingDocument || isLoadingEditor) {
+        const message = isLoadingDocument
+            ? 'Loading document'
+            : 'Loading editor';
+        return <EditorLoader message={message} />;
+    }
+
     if (selectedNode?.kind !== FILE) {
-        console.error('Selected node is not a file');
         return null;
     }
 
     if (!documentModel) {
         return (
-            <h3>
-                Document of type {initialDocument.documentType} is not
-                supported.
-            </h3>
+            <EditorError
+                message={`Document of type '${documentType}' is not supported`}
+            />
         );
     }
 
     if (!editor) {
         return (
-            <h3>
-                No editor available for document of type{' '}
-                {initialDocument.documentType}
-            </h3>
+            <EditorError
+                message={`No editor available for document of type '${documentType}'`}
+            />
         );
-    }
-
-    if (!document || isLoadingEditor) {
-        return <EditorLoader />;
     }
 
     const EditorComponent = editor.Component;
@@ -206,9 +233,13 @@ export function DocumentEditor(props: EditorProps) {
                                 setShowRevisionHistory(true)
                             }
                             isAllowedToCreateDocuments={
-                                isAllowedToCreateDocuments
+                                userPermissions?.isAllowedToCreateDocuments ??
+                                false
                             }
-                            isAllowedToEditDocuments={isAllowedToEditDocuments}
+                            isAllowedToEditDocuments={
+                                userPermissions?.isAllowedToEditDocuments ??
+                                false
+                            }
                         />
                     </Suspense>
                 )}

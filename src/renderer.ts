@@ -33,10 +33,15 @@ import './index.css';
 import { DocumentEditorDebugTools } from './utils/document-editor-debug-tools';
 import serviceWorkerManager from './utils/registerServiceWorker';
 
+const AppElement = document.getElementById('app');
+if (!AppElement) {
+    throw new Error('#app element not found!');
+}
+
 if (import.meta.env.MODE === 'development') {
     window.documentEditorDebugTools = new DocumentEditorDebugTools();
 } else {
     serviceWorkerManager.registerServiceWorker(false);
 }
 
-createRoot(document.getElementById('app')!).render(App);
+createRoot(AppElement).render(App);

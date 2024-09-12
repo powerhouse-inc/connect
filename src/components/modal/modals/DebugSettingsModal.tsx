@@ -6,10 +6,10 @@ import {
     Modal,
 } from '@powerhousedao/design-system';
 import { useEffect, useState } from 'react';
+import { useConnectConfig } from 'src/hooks/useConnectConfig';
 import { useDocumentDriveServer } from 'src/hooks/useDocumentDriveServer';
 import serviceWorkerManager from 'src/utils/registerServiceWorker';
 import { v4 as uuid } from 'uuid';
-
 export interface DebugSettingsModalProps {
     open: boolean;
     onClose: () => void;
@@ -21,13 +21,14 @@ type ComboboxOption = {
 };
 
 export const DebugSettingsModal: React.FC<DebugSettingsModalProps> = props => {
+    const [connectConfig] = useConnectConfig();
     const { open, onClose } = props;
     const autoRegisterPullResponder =
         localStorage.getItem('AUTO_REGISTER_PULL_RESPONDER') !== 'false';
 
     console.log('autoRegisterPullResponder', autoRegisterPullResponder);
 
-    const [appVersion, setAppVersion] = useState('');
+    const [appVersion, setAppVersion] = useState(connectConfig.appVersion);
     const [serviceWorkerDebugMode, setServiceWorkerDebugMode] = useState({
         label: serviceWorkerManager.debug ? 'Enabled' : 'Disabled',
         value: serviceWorkerManager.debug,
@@ -126,11 +127,11 @@ export const DebugSettingsModal: React.FC<DebugSettingsModalProps> = props => {
                 <div className="flex text-sm font-bold">
                     <Icon name="Ring" size={22} />
                     <span className="ml-2">
-                        App Version: {process.env.APP_VERSION}
+                        App Version: {connectConfig.appVersion}
                     </span>
                 </div>
 
-                <div className="flex text-sm font-bold mt-4">
+                <div className="mt-4 flex text-sm font-bold">
                     <Icon name="Hdd" size={22} />
                     <span className="ml-2">Drive Tools:</span>
                 </div>
@@ -258,7 +259,7 @@ export const DebugSettingsModal: React.FC<DebugSettingsModalProps> = props => {
                     </div>
                 </div>
 
-                <div className="flex text-sm font-bold mt-4">
+                <div className="mt-4 flex text-sm font-bold">
                     <Icon name="Gear" size={22} />
                     <span className="ml-2">Service Worker Tools:</span>
                 </div>
