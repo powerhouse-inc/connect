@@ -40,7 +40,7 @@ if (!AppElement) {
 
 if (import.meta.env.MODE === 'development') {
     window.documentEditorDebugTools = new DocumentEditorDebugTools();
-} else {
+    // } else {
     serviceWorkerManager.registerServiceWorker(false);
 }
 

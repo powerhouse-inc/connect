@@ -1,6 +1,6 @@
 /// <reference lib="WebWorker" />
 
-import { ServiceWorkerEvent } from './utils/registerServiceWorker';
+import type { ServiceWorkerEvent } from './utils/registerServiceWorker';
 
 const _self = self as unknown as ServiceWorkerGlobalScope;
 
@@ -9,12 +9,13 @@ const REQUIRES_HARD_REFRESH = __REQUIRES_HARD_REFRESH__;
 
 const VERSION_CACHE = 'version-cache';
 const VERSION_KEY = 'app-version';
+const DOCUMENTS_CACHE = 'documents-cache';
 
 _self.addEventListener('install', () => {
     _self.skipWaiting().catch(console.error);
 });
 
-_self.addEventListener('activate', (event: ExtendableEvent) => {
+_self.addEventListener('activate', async (event: ExtendableEvent) => {
     event.waitUntil(_self.clients.claim());
 
     checkAppVersion(APP_VERSION, REQUIRES_HARD_REFRESH).catch(console.error);
@@ -73,3 +74,29 @@ async function updateClients(requiresHardRefresh: boolean) {
         });
     });
 }
+
+async function handleDocumentFetch(request: Request, cache: Cache) {
+    try {
+        const response = await fetch(request);
+        if (response.ok) {
+            cache.put(request, response.clone()).catch(console.error);
+            return response;
+        } else {
+            const cachedResponse = await cache.match(request);
+            return cachedResponse ?? response;
+        }
+    } catch (error) {
+        console.error('Error fetching resource:', error);
+        const cachedResponse = await cache.match(request);
+        if (cachedResponse) {
+            return cachedResponse;
+        } else {
+            throw error;
+        }
+    }
+}
+
+_self.addEventListener('fetch', async e => {
+    const documentsCache = await caches.open(DOCUMENTS_CACHE);
+    return e.respondWith(handleDocumentFetch(e.request, documentsCache));
+});
