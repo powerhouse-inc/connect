@@ -35,7 +35,6 @@ import { loadFile } from 'src/utils/file';
 import { addActionContext, signOperation } from 'src/utils/signature';
 import { useConnectCrypto, useConnectDid } from './useConnectCrypto';
 import { useDocumentDrives } from './useDocumentDrives';
-import defaultConfig from './useFeatureFlags/default-config';
 import { useUserPermissions } from './useUserPermissions';
 
 export const FILE_UPLOAD_OPERATIONS_CHUNK_SIZE =
@@ -508,7 +507,7 @@ export function useDocumentDriveServer(
     );
 
     const deleteDrive = useCallback(
-        async (id: string) => {
+        async (id: string, force = false) => {
             if (!server) {
                 throw new Error('Server is not defined');
             }
@@ -520,23 +519,13 @@ export function useDocumentDriveServer(
                 throw new Error(`Drive with id ${id} not found`);
             }
 
-            // if the drive being deleted is not a default drive
-            // then ignore user permissions
-            const isDefaultDrive = defaultConfig.defaultDrives?.find(
-                defaultDrive => {
-                    return drive.state.local.triggers.some(
-                        trigger => trigger.data?.url === defaultDrive.url,
-                    );
-                },
-            );
-            if (!isAllowedToCreateDocuments && !isDefaultDrive) {
+            if (!isAllowedToCreateDocuments && !force) {
                 throw new Error('User is not allowed to delete drives');
             }
             await server.deleteDrive(id);
             return refreshDocumentDrives();
         },
         [
-            defaultConfig,
             documentDrives,
             isAllowedToCreateDocuments,
             refreshDocumentDrives,
