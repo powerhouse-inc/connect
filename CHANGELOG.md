@@ -1,3 +1,11 @@
+# [1.0.0-next.13](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.12...v1.0.0-next.13) (2024-09-18)
+
+
+### Features
+
+* fixed browser storage check ([175b59b](https://github.com/powerhouse-inc/document-model-electron/commit/175b59b5d22de9f277bbdb5f4e3174f8187eb58d))
+* merge branch 'develop' into staging ([bd1dbe5](https://github.com/powerhouse-inc/document-model-electron/commit/bd1dbe5834924f905f72a0c307ff9a39944e4b23))
+
 # [1.0.0-next.12](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.11...v1.0.0-next.12) (2024-09-18)
 
 
