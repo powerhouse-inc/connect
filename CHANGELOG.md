@@ -1,14 +1,12 @@
 # [1.0.0-next.12](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.11...v1.0.0-next.12) (2024-09-18)
 
 
-### Bug Fixes
-
-* broken e2e tests ([62e533a](https://github.com/powerhouse-inc/document-model-electron/commit/62e533aa92122761724186ef590ca6ef0413584a))
-* cookies text fix ([029c1f6](https://github.com/powerhouse-inc/document-model-electron/commit/029c1f6b76fbe16e7a24eccdc58879b1f4921bd5))
-* disable read mode for local drives ([dc1f0ac](https://github.com/powerhouse-inc/document-model-electron/commit/dc1f0ac3a49176ddeeb12815eec1ef006dc46410))
-
-
-### Features
+* added bottom pagination ([6e6d9da](https://github.com/powerhouse-inc/document-model-electron/commit/6e6d9dab519e1345822e383f0d2dc67f706b898d))
+* show cookie banner on cookie ([21a7b26](https://github.com/powerhouse-inc/document-model-electron/commit/21a7b268be2554460ccd56a55aed77304a580d9d))
+* update cookie policy link ([f643c42](https://github.com/powerhouse-inc/document-model-electron/commit/f643c42fd3e3fcd85124350bcc748a98e375ff40))
+* fixed revisions history scroll ([cfa4e47](https://github.com/powerhouse-inc/document-model-electron/commit/cfa4e473d10333ac876d4c45650fc09eaf1e9127))
+* made footer static instead of fixed ([a9157e8](https://github.com/powerhouse-inc/document-model-electron/commit/a9157e8c702c4ed61268f2995b0cdaa470ade0e6))
+* added env to enable sentry tracing ([b55945d](https://github.com/powerhouse-inc/document-model-electron/commit/b55945d5c2e455b22311be83e94ca86e7787c641))
 
 * added bottom pagination ([6e6d9da](https://github.com/powerhouse-inc/document-model-electron/commit/6e6d9dab519e1345822e383f0d2dc67f706b898d))
 * added disclaimer update to connect footer ([6726595](https://github.com/powerhouse-inc/document-model-electron/commit/6726595e6042d569e56dce044d7c795c3e71b979))
@@ -26,6 +24,14 @@
 * update cookie policy link ([f643c42](https://github.com/powerhouse-inc/document-model-electron/commit/f643c42fd3e3fcd85124350bcc748a98e375ff40))
 * update document-model-libs and design system ([3f84088](https://github.com/powerhouse-inc/document-model-electron/commit/3f84088f1262cc23eba260d7396f86075645d05e))
 * updated package.lock ([b052b9a](https://github.com/powerhouse-inc/document-model-electron/commit/b052b9a0c571dd00fa254c439113fbd8859a12b1))
+
+### Bug Fixes
+
+* cookies text fix ([029c1f6](https://github.com/powerhouse-inc/document-model-electron/commit/029c1f6b76fbe16e7a24eccdc58879b1f4921bd5))
+* broken e2e tests ([62e533a](https://github.com/powerhouse-inc/document-model-electron/commit/62e533aa92122761724186ef590ca6ef0413584a))
+* cookies text fix ([029c1f6](https://github.com/powerhouse-inc/document-model-electron/commit/029c1f6b76fbe16e7a24eccdc58879b1f4921bd5))
+* disable read mode for local drives ([dc1f0ac](https://github.com/powerhouse-inc/document-model-electron/commit/dc1f0ac3a49176ddeeb12815eec1ef006dc46410))
+
 
 # [1.0.0-next.11](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.10...v1.0.0-next.11) (2024-09-12)
 
