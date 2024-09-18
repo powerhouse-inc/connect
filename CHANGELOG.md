@@ -1,3 +1,17 @@
+# [1.0.0-dev.116](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.115...v1.0.0-dev.116) (2024-09-18)
+
+
+### Features
+
+* update cookie policy link ([f643c42](https://github.com/powerhouse-inc/document-model-electron/commit/f643c42fd3e3fcd85124350bcc748a98e375ff40))
+
+# [1.0.0-dev.115](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.114...v1.0.0-dev.115) (2024-09-17)
+
+
+### Features
+
+* fixed revisions history scroll ([cfa4e47](https://github.com/powerhouse-inc/document-model-electron/commit/cfa4e473d10333ac876d4c45650fc09eaf1e9127))
+
 # [1.0.0-dev.114](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.113...v1.0.0-dev.114) (2024-09-17)
 
 
