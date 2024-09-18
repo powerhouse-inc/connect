@@ -40,6 +40,7 @@ type ImportMetaEnv = {
   PH_CONNECT_SENTRY_DSN: string
   PH_CONNECT_SENTRY_PROJECT: string
   PH_CONNECT_SENTRY_ENV: string
+  PH_CONNECT_SENTRY_TRACING_ENABLED: string
   // @user-defined-start
   /*
    *  You can use this section to explicitly extend the type definition of `import.meta.env`
@@ -64,3 +65,6 @@ interface ImportMeta {
   glob: import('vite-envs/types/importGlob').ImportGlobFunction
 }
 
+
+declare const __APP_VERSION__: string
+declare const __REQUIRES_HARD_REFRESH__: boolean
