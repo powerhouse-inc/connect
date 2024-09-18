@@ -5,9 +5,10 @@ import {
 } from '@powerhousedao/design-system';
 import { useAtomValue } from 'jotai';
 import React, { Suspense } from 'react';
+import { CookieBanner } from 'src/components/cookie-banner';
 import { ModalManager } from 'src/components/modal';
-import { PHLogo } from 'src/components/ph-logo';
 import { ReadModeContextProvider } from 'src/context/read-mode';
+import { RootProvider } from 'src/context/root-provider';
 import atoms from 'src/store';
 
 const Router = React.lazy(async () => {
@@ -29,15 +30,17 @@ export default (
         <Suspense fallback={<>{/* TODO loading */}</>}>
             <Preloader />
             <WagmiContext>
-                <ReadModeContextProvider>
-                    <UiNodesContextProvider>
-                        <ToastContainer position="bottom-right" />
-                        <ModalManager>
-                            <Router />
-                            <PHLogo />
-                        </ModalManager>
-                    </UiNodesContextProvider>
-                </ReadModeContextProvider>
+                <RootProvider>
+                    <ReadModeContextProvider>
+                        <UiNodesContextProvider>
+                            <ToastContainer position="bottom-right" />
+                            <ModalManager>
+                                <Router />
+                                <CookieBanner />
+                            </ModalManager>
+                        </UiNodesContextProvider>
+                    </ReadModeContextProvider>
+                </RootProvider>
             </WagmiContext>
         </Suspense>
     </React.StrictMode>

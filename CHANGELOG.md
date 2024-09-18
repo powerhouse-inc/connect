@@ -1,3 +1,87 @@
+# [1.0.0-dev.116](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.115...v1.0.0-dev.116) (2024-09-18)
+
+
+### Features
+
+* update cookie policy link ([f643c42](https://github.com/powerhouse-inc/document-model-electron/commit/f643c42fd3e3fcd85124350bcc748a98e375ff40))
+
+# [1.0.0-dev.115](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.114...v1.0.0-dev.115) (2024-09-17)
+
+
+### Features
+
+* fixed revisions history scroll ([cfa4e47](https://github.com/powerhouse-inc/document-model-electron/commit/cfa4e473d10333ac876d4c45650fc09eaf1e9127))
+
+# [1.0.0-dev.114](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.113...v1.0.0-dev.114) (2024-09-17)
+
+
+### Features
+
+* made footer static instead of fixed ([a9157e8](https://github.com/powerhouse-inc/document-model-electron/commit/a9157e8c702c4ed61268f2995b0cdaa470ade0e6))
+
+# [1.0.0-dev.113](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.112...v1.0.0-dev.113) (2024-09-17)
+
+
+### Features
+
+* added env to enable sentry tracing ([b55945d](https://github.com/powerhouse-inc/document-model-electron/commit/b55945d5c2e455b22311be83e94ca86e7787c641))
+
+# [1.0.0-dev.112](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.111...v1.0.0-dev.112) (2024-09-17)
+
+
+### Bug Fixes
+
+* broken e2e tests ([62e533a](https://github.com/powerhouse-inc/document-model-electron/commit/62e533aa92122761724186ef590ca6ef0413584a))
+
+
+### Features
+
+* implemented cookie banner ([6b9f220](https://github.com/powerhouse-inc/document-model-electron/commit/6b9f2202365c85a8a75655c9fca773a22cf966fc))
+* implemented cookies policy as modal ([ebe2bc6](https://github.com/powerhouse-inc/document-model-electron/commit/ebe2bc6b75a744d774c74cda274ae888ad6cd92f))
+* removed functional cookie ([b806a6a](https://github.com/powerhouse-inc/document-model-electron/commit/b806a6ad0d81e73e84038dd155c99fd46a08cd1d))
+
+# [1.0.0-dev.111](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.110...v1.0.0-dev.111) (2024-09-17)
+
+
+### Features
+
+* improved service worker handling ([b0aaf7e](https://github.com/powerhouse-inc/document-model-electron/commit/b0aaf7e8d569c75cbf24521ebfa89ab5c546772e))
+
+# [1.0.0-dev.110](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.109...v1.0.0-dev.110) (2024-09-16)
+
+
+### Features
+
+* update document-model-libs and design system ([3f84088](https://github.com/powerhouse-inc/document-model-electron/commit/3f84088f1262cc23eba260d7396f86075645d05e))
+
+# [1.0.0-dev.109](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.108...v1.0.0-dev.109) (2024-09-13)
+
+
+### Features
+
+* added disclaimer update to connect footer ([6726595](https://github.com/powerhouse-inc/document-model-electron/commit/6726595e6042d569e56dce044d7c795c3e71b979))
+
+# [1.0.0-dev.108](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.107...v1.0.0-dev.108) (2024-09-12)
+
+
+### Features
+
+* Footer component integration ([76e5a16](https://github.com/powerhouse-inc/document-model-electron/commit/76e5a16de2e568413054fea55c4eae4ff5d5eb90))
+
+# [1.0.0-dev.107](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.106...v1.0.0-dev.107) (2024-09-12)
+
+
+### Bug Fixes
+
+* disable read mode for local drives ([dc1f0ac](https://github.com/powerhouse-inc/document-model-electron/commit/dc1f0ac3a49176ddeeb12815eec1ef006dc46410))
+
+# [1.0.0-dev.106](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.105...v1.0.0-dev.106) (2024-09-12)
+
+
+### Features
+
+* show error when document loading fails ([9c82f93](https://github.com/powerhouse-inc/document-model-electron/commit/9c82f933d83ddd0e581e30cc6889d09a8fecde4d))
+
 # [1.0.0-dev.105](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.104...v1.0.0-dev.105) (2024-09-12)
 
 
