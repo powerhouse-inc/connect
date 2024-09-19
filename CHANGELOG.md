@@ -1,3 +1,31 @@
+# [1.0.0-dev.121](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.120...v1.0.0-dev.121) (2024-09-18)
+
+
+### Features
+
+* updated document-drive ([0bf0109](https://github.com/powerhouse-inc/document-model-electron/commit/0bf01090774a2de3726cb9e739f7803603b2d552))
+
+# [1.0.0-dev.120](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.119...v1.0.0-dev.120) (2024-09-18)
+
+
+### Features
+
+* fixed browser storage check ([175b59b](https://github.com/powerhouse-inc/document-model-electron/commit/175b59b5d22de9f277bbdb5f4e3174f8187eb58d))
+
+# [1.0.0-dev.119](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.118...v1.0.0-dev.119) (2024-09-18)
+
+
+### Bug Fixes
+
+* cookies text fix ([029c1f6](https://github.com/powerhouse-inc/document-model-electron/commit/029c1f6b76fbe16e7a24eccdc58879b1f4921bd5))
+
+# [1.0.0-dev.118](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.117...v1.0.0-dev.118) (2024-09-18)
+
+
+### Features
+
+* added bottom pagination ([6e6d9da](https://github.com/powerhouse-inc/document-model-electron/commit/6e6d9dab519e1345822e383f0d2dc67f706b898d))
+
 # [1.0.0-dev.117](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.116...v1.0.0-dev.117) (2024-09-18)
 
 
