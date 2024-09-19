@@ -1,3 +1,24 @@
+# [1.0.0-dev.124](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.123...v1.0.0-dev.124) (2024-09-19)
+
+
+### Features
+
+* added robots.txt ([a735a79](https://github.com/powerhouse-inc/document-model-electron/commit/a735a79eba27f1ac51c243ee0471879c31d45784))
+
+# [1.0.0-dev.123](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.122...v1.0.0-dev.123) (2024-09-19)
+
+
+### Features
+
+* avoid refreshing if already on latest app version ([e4c753d](https://github.com/powerhouse-inc/document-model-electron/commit/e4c753d09da69920aa7571d4908e50738d0fa7f7))
+
+# [1.0.0-dev.122](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.121...v1.0.0-dev.122) (2024-09-19)
+
+
+### Bug Fixes
+
+* windows cookies scroll ([13a184d](https://github.com/powerhouse-inc/document-model-electron/commit/13a184d6cee1d63e17dd49725227ef16544acf90))
+
 # [1.0.0-dev.121](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.120...v1.0.0-dev.121) (2024-09-18)
 
 
