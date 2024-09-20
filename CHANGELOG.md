@@ -1,3 +1,17 @@
+# [1.0.0-dev.126](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.125...v1.0.0-dev.126) (2024-09-20)
+
+
+### Features
+
+* update document drive ([da20e47](https://github.com/powerhouse-inc/document-model-electron/commit/da20e473b365bfa127d1eb6975590ea03a891db0))
+
+# [1.0.0-dev.125](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.124...v1.0.0-dev.125) (2024-09-19)
+
+
+### Features
+
+* added nginx rule for robots.txt ([92d01fa](https://github.com/powerhouse-inc/document-model-electron/commit/92d01fab1cbe20f3728ceff2ef7eb39ebe0a60e0))
+
 # [1.0.0-dev.124](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.123...v1.0.0-dev.124) (2024-09-19)
 
 
