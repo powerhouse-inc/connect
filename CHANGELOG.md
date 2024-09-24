@@ -1,3 +1,38 @@
+# [1.0.0-dev.132](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.131...v1.0.0-dev.132) (2024-09-24)
+
+
+### Features
+
+* added detach strategy for old drives ([abb819b](https://github.com/powerhouse-inc/document-model-electron/commit/abb819b46fa66711ef8e57d6d8d7171bab7b1259))
+
+# [1.0.0-dev.131](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.130...v1.0.0-dev.131) (2024-09-24)
+
+
+### Bug Fixes
+
+* env router basename ([4bc9267](https://github.com/powerhouse-inc/document-model-electron/commit/4bc9267bc55902ce7a6631eb76ffc8c4472892ff))
+
+# [1.0.0-dev.130](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.129...v1.0.0-dev.130) (2024-09-23)
+
+
+### Bug Fixes
+
+* skipped operations on revision history ([7c49063](https://github.com/powerhouse-inc/document-model-electron/commit/7c49063008edf2f26413daa38095038a91299d3f))
+
+# [1.0.0-dev.129](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.128...v1.0.0-dev.129) (2024-09-23)
+
+
+### Features
+
+* export connect as cli executable ([68f59b2](https://github.com/powerhouse-inc/document-model-electron/commit/68f59b25f3eb7fdc5e7d5907bbb1db7480777419))
+
+# [1.0.0-dev.128](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.127...v1.0.0-dev.128) (2024-09-23)
+
+
+### Bug Fixes
+
+* base path ([9c4e94e](https://github.com/powerhouse-inc/document-model-electron/commit/9c4e94ec8399799c4e476d4e6ae248e44e9f690a))
+
 # [1.0.0-dev.127](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.126...v1.0.0-dev.127) (2024-09-20)
 
 
