@@ -28,11 +28,12 @@
     },
     "include": [
         "src",
+        "package",
         "e2e-tests",
         "*.config.ts",
         "*.config.mts",
         "*.config.js",
         "reset.d.ts",
     ],
-    "files": ["custom.d.ts", "index.js", "cli.js"]
+    "files": ["custom.d.ts"]
 }

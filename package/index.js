@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 export function startServer() {
     const app = express();
 
-    app.use(express.static(join(__dirname, 'dist')));
+    app.use(express.static(join(__dirname, '../dist')));
 
     app.get('*', (req, res) => {
         res.sendFile(join(__dirname, 'dist', 'index.html'));
