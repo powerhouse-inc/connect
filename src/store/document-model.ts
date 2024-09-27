@@ -2,22 +2,44 @@ import * as DocumentModels from 'document-model-libs/document-models';
 import { Action, DocumentModel } from 'document-model/document';
 import { module as DocumentModelLib } from 'document-model/document-model';
 import { atom, useAtomValue } from 'jotai';
+import { loadable } from 'jotai/utils';
 import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
 
-export const documentModels = [
-    DocumentModelLib,
-    ...Object.values(DocumentModels),
-] as DocumentModel[];
+export const LOCAL_DOCUMENT_MODELS = import.meta.env.LOCAL_DOCUMENT_MODELS;
 
-export const documentModelsAtom = atom(documentModels);
+export const documentModelsMap: Record<string, DocumentModel> = {
+    DocumentModel: DocumentModelLib as DocumentModel,
+    ...(DocumentModels as Record<string, DocumentModel>),
+};
+
+export const documentModels = Object.values(documentModelsMap);
+
+const asyncDocumentModelsAtom = atom(async () => {
+    let newDocumentModelsMap = { ...documentModelsMap };
+    if (LOCAL_DOCUMENT_MODELS) {
+        try {
+            const localModule = (await import(
+                'LOCAL_DOCUMENT_MODELS'
+            )) as unknown as Record<string, DocumentModel>;
+            console.log('New local document models', localModule);
+            newDocumentModelsMap = { ...documentModelsMap, ...localModule };
+        } catch (e) {
+            console.error('OI', LOCAL_DOCUMENT_MODELS, 'IO');
+            console.error('Error loading local document models', e);
+        }
+    }
+    return Object.values(newDocumentModelsMap);
+});
+
+export const documentModelsAtom = loadable(asyncDocumentModelsAtom); // atom(documentModels);
 
 export const useDocumentModels = () => useAtomValue(documentModelsAtom);
 
 function getDocumentModel<S = unknown, A extends Action = Action>(
     documentType: string,
-    documentModels: DocumentModel[],
+    documentModels: DocumentModel[] | undefined,
 ) {
-    return documentModels.find(d => d.documentModel.id === documentType) as
+    return documentModels?.find(d => d.documentModel.id === documentType) as
         | DocumentModel<S, A>
         | undefined;
 }
@@ -26,13 +48,21 @@ export function useDocumentModel<S = unknown, A extends Action = Action>(
     documentType: string,
 ) {
     const documentModels = useDocumentModels();
-    return getDocumentModel<S, A>(documentType, documentModels);
+    return getDocumentModel<S, A>(
+        documentType,
+        documentModels.state === 'hasData' ? documentModels.data : undefined,
+    );
 }
 
 export const useGetDocumentModel = () => {
     const documentModels = useDocumentModels();
     return (documentType: string) =>
-        getDocumentModel(documentType, documentModels);
+        getDocumentModel(
+            documentType,
+            documentModels.state === 'hasData'
+                ? documentModels.data
+                : undefined,
+        );
 };
 
 /**
@@ -44,10 +74,14 @@ export const useGetDocumentModel = () => {
  * @returns {Array<DocumentModel>} The filtered document models.
  */
 export const useFilteredDocumentModels = () => {
-    const _documentModels = useDocumentModels();
+    const asyncDocumentModels = useDocumentModels();
     const { config } = useFeatureFlag();
     const { enabledEditors, disabledEditors } = config.editors;
 
+    if (asyncDocumentModels.state !== 'hasData') {
+        return undefined;
+    }
+    const _documentModels = asyncDocumentModels.data;
     const documentModels = _documentModels.filter(
         model => model.documentModel.id !== 'powerhouse/document-drive',
     );

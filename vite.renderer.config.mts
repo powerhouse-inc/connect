@@ -84,6 +84,17 @@ export default defineConfig(({ mode }) => {
         );
     }
 
+    // const LOCAL_DOCUMENT_MODELS =
+    //     process.env.LOCAL_DOCUMENT_MODELS ?? env.LOCAL_DOCUMENT_MODELS;
+    // const LOCAL_DOCUMENT_EDITORS =
+    //     process.env.LOCAL_DOCUMENT_EDITORS ?? env.LOCAL_DOCUMENT_EDITORS;
+    // const localDocumentModelsAlias = LOCAL_DOCUMENT_MODELS
+    //     ? { LOCAL_DOCUMENT_MODELS }
+    //     : undefined;
+    // const localDocumentEditorsAlias = LOCAL_DOCUMENT_EDITORS
+    //     ? { LOCAL_DOCUMENT_EDITORS }
+    //     : undefined;
+
     return {
         plugins,
         build: {
@@ -106,6 +117,7 @@ export default defineConfig(({ mode }) => {
                             : 'assets/[name].[hash].js';
                     },
                 },
+                external: ["LOCAL_DOCUMENT_MODELS", "LOCAL_DOCUMENT_EDITORS"],
             },
         },
         resolve: {
@@ -118,11 +130,18 @@ export default defineConfig(({ mode }) => {
                 ),
                 path: 'rollup-plugin-node-polyfills/polyfills/path',
                 events: 'rollup-plugin-node-polyfills/polyfills/events',
+                // ...localDocumentModelsAlias,
             },
         },
         define: {
             __APP_VERSION__: JSON.stringify(APP_VERSION),
             __REQUIRES_HARD_REFRESH__: JSON.stringify(REQUIRES_HARD_REFRESH),
+            // __LOCAL_DOCUMENT_MODELS__: LOCAL_DOCUMENT_MODELS
+            //     ? JSON.stringify(LOCAL_DOCUMENT_MODELS)
+            //     : undefined,
+            // __LOCAL_DOCUMENT_EDITORS__: LOCAL_DOCUMENT_EDITORS
+            //     ? JSON.stringify(LOCAL_DOCUMENT_EDITORS)
+            //     : undefined,
         },
     };
 });
