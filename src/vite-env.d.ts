@@ -41,6 +41,7 @@ type ImportMetaEnv = {
   PH_CONNECT_SENTRY_PROJECT: string
   PH_CONNECT_SENTRY_ENV: string
   PH_CONNECT_SENTRY_TRACING_ENABLED: string
+  LOCAL_DOCUMENT_MODELS: string
   // @user-defined-start
   /*
    *  You can use this section to explicitly extend the type definition of `import.meta.env`

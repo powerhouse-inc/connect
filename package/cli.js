@@ -2,4 +2,6 @@
 
 import { startServer } from './index.js';
 
-startServer();
+startServer().catch(error => {
+    throw error;
+});
