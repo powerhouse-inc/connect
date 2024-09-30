@@ -3,13 +3,58 @@ import react from '@vitejs/plugin-react';
 import jotaiDebugLabel from 'jotai/babel/plugin-debug-label';
 import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 import path from 'path';
-import { HtmlTagDescriptor, PluginOption, defineConfig, loadEnv } from 'vite';
+import {
+    HtmlTagDescriptor,
+    Plugin,
+    PluginOption,
+    defineConfig,
+    loadEnv,
+} from 'vite';
 import { viteEnvs } from 'vite-envs';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import svgr from 'vite-plugin-svgr';
 import pkg from './package.json';
 
 import clientConfig from './client.config';
+
+function viteIgnoreStaticImport(importKeys: string[]): Plugin {
+    return {
+        name: 'vite-plugin-ignore-static-import',
+        enforce: 'pre',
+        // 1. insert to optimizeDeps.exclude to prevent pre-transform
+        config(config) {
+            config.optimizeDeps = {
+                ...(config.optimizeDeps ?? {}),
+                exclude: [
+                    ...(config.optimizeDeps?.exclude ?? []),
+                    ...importKeys,
+                ],
+            };
+        },
+        // 2. push a plugin to rewrite the 'vite:import-analysis' prefix
+        configResolved(resolvedConfig) {
+            const VALID_ID_PREFIX = `/@id/`;
+            const reg = new RegExp(
+                `${VALID_ID_PREFIX}(${importKeys.join('|')})`,
+                'g',
+            );
+
+            (resolvedConfig.plugins as Plugin[]).push({
+                name: 'vite-plugin-ignore-static-import-replace-idprefix',
+                transform: code =>
+                    reg.test(code)
+                        ? code.replace(reg, (_, s1: string) => s1)
+                        : code,
+            });
+        },
+        // 3. rewrite the id before 'vite:resolve' plugin transform to 'node_modules/...'
+        resolveId: id => {
+            if (importKeys.includes(id)) {
+                return { id, external: true };
+            }
+        },
+    };
+}
 
 export default defineConfig(({ mode }) => {
     const isProd = mode === 'production';
@@ -37,7 +82,31 @@ export default defineConfig(({ mode }) => {
         (process.env.SENTRY_RELEASE ?? env.SENTRY_RELEASE) || APP_VERSION;
     const uploadSentrySourcemaps = authToken && org && project;
 
+    const LOCAL_DOCUMENT_MODELS =
+        process.env.LOCAL_DOCUMENT_MODELS ?? env.LOCAL_DOCUMENT_MODELS;
+    const LOCAL_DOCUMENT_EDITORS =
+        process.env.LOCAL_DOCUMENT_EDITORS ?? env.LOCAL_DOCUMENT_EDITORS;
+
+    const LOCAL_DOCUMENT_MODELS_PATH = LOCAL_DOCUMENT_MODELS
+        ? path.resolve(process.cwd(), LOCAL_DOCUMENT_MODELS)
+        : undefined;
+
+    const LOCAL_DOCUMENT_MODELS_IMPORT = 'LOCAL_DOCUMENT_MODELS';
+
+    const localDocumentModelsAlias = LOCAL_DOCUMENT_MODELS
+        ? {
+              [LOCAL_DOCUMENT_MODELS_IMPORT]: LOCAL_DOCUMENT_MODELS_PATH,
+          }
+        : undefined;
+    const localDocumentEditorsAlias = LOCAL_DOCUMENT_EDITORS
+        ? { LOCAL_DOCUMENT_EDITORS: LOCAL_DOCUMENT_EDITORS }
+        : undefined;
+
     const plugins: PluginOption[] = [
+        viteIgnoreStaticImport([
+            LOCAL_DOCUMENT_MODELS_IMPORT,
+            'LOCAL_DOCUMENT_EDITORS',
+        ]),
         react({
             include: 'src/**/*.tsx',
             babel: {
@@ -84,17 +153,6 @@ export default defineConfig(({ mode }) => {
         );
     }
 
-    // const LOCAL_DOCUMENT_MODELS =
-    //     process.env.LOCAL_DOCUMENT_MODELS ?? env.LOCAL_DOCUMENT_MODELS;
-    // const LOCAL_DOCUMENT_EDITORS =
-    //     process.env.LOCAL_DOCUMENT_EDITORS ?? env.LOCAL_DOCUMENT_EDITORS;
-    // const localDocumentModelsAlias = LOCAL_DOCUMENT_MODELS
-    //     ? { LOCAL_DOCUMENT_MODELS }
-    //     : undefined;
-    // const localDocumentEditorsAlias = LOCAL_DOCUMENT_EDITORS
-    //     ? { LOCAL_DOCUMENT_EDITORS }
-    //     : undefined;
-
     return {
         plugins,
         build: {
@@ -117,7 +175,7 @@ export default defineConfig(({ mode }) => {
                             : 'assets/[name].[hash].js';
                     },
                 },
-                external: ["LOCAL_DOCUMENT_MODELS", "LOCAL_DOCUMENT_EDITORS"],
+                // external: ['LOCAL_DOCUMENT_MODELS', 'LOCAL_DOCUMENT_EDITORS'],
             },
         },
         resolve: {
@@ -130,18 +188,12 @@ export default defineConfig(({ mode }) => {
                 ),
                 path: 'rollup-plugin-node-polyfills/polyfills/path',
                 events: 'rollup-plugin-node-polyfills/polyfills/events',
-                // ...localDocumentModelsAlias,
+                ...localDocumentModelsAlias,
             },
         },
         define: {
             __APP_VERSION__: JSON.stringify(APP_VERSION),
             __REQUIRES_HARD_REFRESH__: JSON.stringify(REQUIRES_HARD_REFRESH),
-            // __LOCAL_DOCUMENT_MODELS__: LOCAL_DOCUMENT_MODELS
-            //     ? JSON.stringify(LOCAL_DOCUMENT_MODELS)
-            //     : undefined,
-            // __LOCAL_DOCUMENT_EDITORS__: LOCAL_DOCUMENT_EDITORS
-            //     ? JSON.stringify(LOCAL_DOCUMENT_EDITORS)
-            //     : undefined,
         },
     };
 });
