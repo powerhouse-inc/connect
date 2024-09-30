@@ -22,6 +22,44 @@ logger.warn = (msg, options) => {
     }
     loggerWarn(msg, options);
 };
+
+function viteIgnoreStaticImport(importKeys) {
+    return {
+        name: 'vite-plugin-ignore-static-import',
+        enforce: 'pre',
+        // 1. insert to optimizeDeps.exclude to prevent pre-transform
+        config(config) {
+            config.optimizeDeps = {
+                ...(config.optimizeDeps ?? {}),
+                exclude: [
+                    ...(config.optimizeDeps?.exclude ?? []),
+                    ...importKeys,
+                ],
+            };
+        },
+        // 2. push a plugin to rewrite the 'vite:import-analysis' prefix
+        configResolved(resolvedConfig) {
+            const VALID_ID_PREFIX = `/@id/`;
+            const reg = new RegExp(
+                `${VALID_ID_PREFIX}(${importKeys.join('|')})`,
+                'g',
+            );
+
+            resolvedConfig.plugins.push({
+                name: 'vite-plugin-ignore-static-import-replace-idprefix',
+                transform: code =>
+                    reg.test(code) ? code.replace(reg, (_, s1) => s1) : code,
+            });
+        },
+        // 3. rewrite the id before 'vite:resolve' plugin transform to 'node_modules/...'
+        resolveId: id => {
+            if (importKeys.includes(id)) {
+                return { id, external: true };
+            }
+        },
+    };
+}
+
 /**
  * @param {string | undefined} documentModelsPath
  * @param {string | undefined} editorsPath
@@ -85,8 +123,6 @@ function WatchLocalPlugin(documentModelsPath, editorsPath) {
     };
 }
 
-const LOCAL_DOCUMENTS_IMPORT_NAME = 'LOCAL_DOCUMENT_MODELS';
-
 export async function startServer() {
     const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
     const LOCAL_DOCUMENT_MODELS = process.env.LOCAL_DOCUMENT_MODELS
@@ -95,7 +131,7 @@ export async function startServer() {
     const LOCAL_DOCUMENT_EDITORS = process.env.LOCAL_DOCUMENT_EDITORS
         ? resolvePath(rootDirname, process.env.LOCAL_DOCUMENT_EDITORS)
         : '';
-    const LOCAL_EDITORS_IMPORT_NAME = 'LOCAL_EDITORS_MODELS';
+
     const VITE_ENVS_SCRIPT = join(appPath, 'vite-envs.sh');
 
     /** @type {import('vite').AliasOptions} */
@@ -104,7 +140,7 @@ export async function startServer() {
         alias.LOCAL_DOCUMENT_MODELS = LOCAL_DOCUMENT_MODELS;
     }
     if (LOCAL_DOCUMENT_EDITORS) {
-        alias[LOCAL_EDITORS_IMPORT_NAME] = LOCAL_DOCUMENT_EDITORS;
+        alias.LOCAL_EDITORS_MODELS = LOCAL_DOCUMENT_EDITORS;
     }
 
     if (!fs.existsSync(join(appPath, 'src'))) {
@@ -121,6 +157,10 @@ export async function startServer() {
             open: true,
         },
         plugins: [
+            viteIgnoreStaticImport([
+                'LOCAL_DOCUMENT_MODELS',
+                'LOCAL_DOCUMENT_EDITORS',
+            ]),
             viteEnvs({
                 declarationFile: join(connectDirname, '../.env'),
                 computedEnv: {
@@ -142,9 +182,8 @@ export async function startServer() {
                                     return;
                                 }
                                 if (stderr) {
-                                    console.error(`stderr: ${stderr}`);
+                                    console.error(stderr);
                                 }
-                                console.log(`stdout: ${stdout}`);
                             },
                         );
                     }
@@ -153,9 +192,7 @@ export async function startServer() {
             WatchLocalPlugin(LOCAL_DOCUMENT_MODELS, LOCAL_DOCUMENT_EDITORS),
         ],
         resolve: {
-            alias: {
-                LOCAL_DOCUMENT_MODELS: LOCAL_DOCUMENT_MODELS,
-            },
+            alias,
         },
     };
 
