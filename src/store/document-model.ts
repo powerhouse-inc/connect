@@ -1,11 +1,10 @@
 import * as DocumentModels from 'document-model-libs/document-models';
 import { Action, DocumentModel } from 'document-model/document';
 import { module as DocumentModelLib } from 'document-model/document-model';
-import { atom, getDefaultStore, useAtomValue } from 'jotai';
+import { atom, useAtomValue } from 'jotai';
 import { unwrap } from 'jotai/utils';
 import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
-
-const defaultStore = getDefaultStore();
+import { atomStore } from '.';
 
 export const LOCAL_DOCUMENT_MODELS = import.meta.env.LOCAL_DOCUMENT_MODELS;
 
@@ -38,7 +37,7 @@ const dynamicDocumentModelsAtom = atom<Promise<DocumentModel[]>>(
     dynamicDocumentModels,
 );
 
-const documentModelsAtom = atom(async get => {
+export const documentModelsAtom = atom(async get => {
     const dynamicDocumentModels = await get(dynamicDocumentModelsAtom);
     const newDocumentModelIds = dynamicDocumentModels.map(
         dm => dm.documentModel.id,
@@ -64,8 +63,8 @@ export const useDocumentModelsAsync = () => dynamicDocumentModels;
 export const subscribeDocumentModels = function (
     listener: (documentModels: DocumentModel[]) => void,
 ) {
-    return defaultStore.sub(documentModelsAtom, () => {
-        defaultStore
+    return atomStore.sub(documentModelsAtom, () => {
+        atomStore
             .get(documentModelsAtom)
             .then(listener)
             .catch(e => {

@@ -6,13 +6,10 @@
     "main": "./index.js",
     "type": "module",
     "bin": {
-        "connect": "./package/cli.js"
+        "connect": "./dist/studio/cli.js"
     },
     "files": [
-        "dist",
-        "package",
-        ".env",
-        ".env.example"
+        "dist"
     ],
     "license": "AGPL-3.0-only",
     "author": "acaldas@powerhouse.inc",
@@ -38,6 +35,8 @@
         "dev:web": "vite -c vite.renderer.config.mts",
         "dev:nocache": "rm -rf node_modules/.vite && rm -rf node_modules/.cache && npm run dev:web",
         "build:web": "NODE_OPTIONS=--max-old-space-size=6144 vite build -c vite.renderer.config.mts",
+        "build:studio": "node studio/esbuild.studio.config.mjs",
+        "prebuild:studio": "npm run build:web",
         "preview:web": "vite preview -c vite.renderer.config.mts",
         "release": "semantic-release",
         "e2e": "playwright test",
@@ -88,6 +87,7 @@
         "electron-playwright-helpers": "^1.7.1",
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^8.1.0",
+        "esbuild": "^0.24.0",
         "eslint": "^8.56.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-react": "^7.33.2",

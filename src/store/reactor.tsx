@@ -1,16 +1,17 @@
 import connectConfig from 'connect-config';
 import { type IDocumentDriveServer } from 'document-drive';
 import { utils } from 'document-model/document';
-import { atom, getDefaultStore, useAtomValue } from 'jotai';
+import { atom, useAtomValue } from 'jotai';
 import { unwrap } from 'jotai/utils';
 import { logger } from 'src/services/logger';
 import {
     baseDocumentModels,
+    documentModelsAtom,
     subscribeDocumentModels,
+    useDocumentModelsAsync,
 } from 'src/store/document-model';
 import { createBrowserDocumentDriveServer } from 'src/utils/reactor';
-
-const defaultStore = getDefaultStore();
+import { atomStore } from '.';
 
 async function initReactor(reactor: IDocumentDriveServer) {
     const errors = await reactor.initialize();
@@ -53,21 +54,31 @@ const reactor = (async () => {
 })();
 
 const reactorAtom = atom<Promise<IDocumentDriveServer>>(reactor);
+const unwrappedReactor = unwrap(reactorAtom);
 
 // blocks rendering until reactor is initialized.
 export const useReactor = () => useAtomValue(reactorAtom);
 
-const unwrappedReactor = unwrap(reactorAtom);
-
 // will return undefined until reactor is initialized. Does not block rendering.
 export const useUnwrappedReactor = () => useAtomValue(unwrappedReactor);
 
+// returns promise that will resolve when reactor is initialized.
 export const useReactorAsync = () => {
     return reactor;
 };
 
 // updates reactor document models when they change.
 subscribeDocumentModels(async documentModels => {
-    const reactor = await defaultStore.get(reactorAtom);
+    const reactor = await atomStore.get(reactorAtom);
     reactor.setDocumentModels(documentModels);
 });
+
+async function updateDocumentModels() {
+    // wait for local document models to be loaded
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    await useDocumentModelsAsync();
+    // update reactor document models
+    const documentModels = await atomStore.get(documentModelsAtom);
+    (await reactor).setDocumentModels(documentModels);
+}
+updateDocumentModels().catch(console.error);
