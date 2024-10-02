@@ -15,6 +15,7 @@ import { useReadModeContext } from 'src/context/read-mode';
 import { useUiNodes } from 'src/hooks/useUiNodes';
 import { useUnwrappedReactor } from 'src/store/reactor';
 import { useClientErrorHandler } from './useClientErrorHandler';
+import { useConnectConfig } from './useConnectConfig';
 import { useDocumentDrives } from './useDocumentDrives';
 import { isLatestVersion } from './utils';
 
@@ -33,18 +34,29 @@ export const useLoadInitialData = () => {
     const { readDrives } = useReadModeContext();
     const clientErrorHandler = useClientErrorHandler();
     const reactor = useUnwrappedReactor();
+    const [connectConfig] = useConnectConfig();
 
     async function checkLatestVersion() {
         const result = await isLatestVersion();
         if (result === null) return;
-        if (!result) {
+        if (result.isLatest) {
+            return true;
+        }
+
+        if (
+            import.meta.env.MODE === 'development' ||
+            connectConfig.studioMode
+        ) {
+            console.warn(
+                `Connect is outdated: \nCurrent: ${result.currentVersion}\nLatest: ${result.latestVersion}`,
+            );
+        } else {
             toast(<ReloadConnectToast />, {
                 type: 'connect-warning',
                 toastId: 'outdated-app',
                 autoClose: false,
             });
         }
-        return result;
     }
 
     useEffect(() => {
