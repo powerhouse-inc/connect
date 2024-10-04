@@ -1,5 +1,12 @@
+import fs from 'node:fs';
 import path from 'node:path';
-import { Alias, AliasOptions, Plugin, normalizePath } from 'vite';
+import {
+    Alias,
+    AliasOptions,
+    Plugin,
+    ViteDevServer,
+    normalizePath,
+} from 'vite';
 
 export const LOCAL_DOCUMENT_MODELS_IMPORT = 'LOCAL_DOCUMENT_MODELS';
 export const LOCAL_DOCUMENT_EDITORS_IMPORT = 'LOCAL_DOCUMENT_EDITORS';
@@ -36,6 +43,61 @@ export function getStudioConfig(env?: Record<string, string>): {
     return config;
 }
 
+export function watchLocalFiles(
+    server: ViteDevServer,
+    documentModelsPath?: string,
+    editorsPath?: string,
+) {
+    if (documentModelsPath) {
+        // Use fs to watch the file and trigger a server reload when it changes
+        console.log(
+            `Watching local document models at '${documentModelsPath}'...`,
+        );
+        try {
+            fs.watch(
+                documentModelsPath,
+                {
+                    recursive: true,
+                },
+                (event, filename) => {
+                    console.log(
+                        `Local document models changed, reloading server...`,
+                    );
+                    server.ws.send({
+                        type: 'full-reload',
+                        path: '*',
+                    });
+                },
+            );
+        } catch (e) {
+            console.error('Error watching local document models', e);
+        }
+    }
+
+    if (editorsPath) {
+        console.log(`Watching local document editors at '${editorsPath}'...`);
+        try {
+            fs.watch(
+                editorsPath,
+                {
+                    recursive: true,
+                },
+                (event, filename) => {
+                    console.log(
+                        `Local document models changed, reloading server...`,
+                    );
+                    server.ws.send({
+                        type: 'full-reload',
+                        path: '*',
+                    });
+                },
+            );
+        } catch (e) {
+            console.error('Error watching local document models', e);
+        }
+    }
+}
+
 export function viteConnectDevStudioPlugin(
     env?: Record<string, string>,
 ): Plugin {
@@ -44,15 +106,15 @@ export function viteConnectDevStudioPlugin(
         LOCAL_DOCUMENT_MODELS_IMPORT,
         LOCAL_DOCUMENT_EDITORS_IMPORT,
     ];
+    const localDocumentModelsPath = studioConfig[LOCAL_DOCUMENT_MODELS_IMPORT];
+    const localDocumentEditorsPath =
+        studioConfig[LOCAL_DOCUMENT_EDITORS_IMPORT];
 
     return {
         name: 'vite-plugin-connect-dev-studio',
         enforce: 'pre',
         config(config) {
-            if (
-                !studioConfig[LOCAL_DOCUMENT_MODELS_IMPORT] &&
-                !studioConfig[LOCAL_DOCUMENT_EDITORS_IMPORT]
-            ) {
+            if (!localDocumentModelsPath && !localDocumentEditorsPath) {
                 return;
             }
 
@@ -63,18 +125,17 @@ export function viteConnectDevStudioPlugin(
             if (Array.isArray(alias)) {
                 const arrayAlias = [...(alias as Alias[])];
 
-                if (studioConfig[LOCAL_DOCUMENT_MODELS_IMPORT]) {
+                if (localDocumentModelsPath) {
                     arrayAlias.push({
                         find: LOCAL_DOCUMENT_MODELS_IMPORT,
-                        replacement: studioConfig[LOCAL_DOCUMENT_MODELS_IMPORT],
+                        replacement: localDocumentModelsPath,
                     });
                 }
 
-                if (studioConfig[LOCAL_DOCUMENT_EDITORS_IMPORT]) {
+                if (localDocumentEditorsPath) {
                     arrayAlias.push({
                         find: LOCAL_DOCUMENT_EDITORS_IMPORT,
-                        replacement:
-                            studioConfig[LOCAL_DOCUMENT_EDITORS_IMPORT],
+                        replacement: localDocumentEditorsPath,
                     });
                 }
                 resolvedAlias = arrayAlias;
@@ -90,6 +151,13 @@ export function viteConnectDevStudioPlugin(
                 resolve.alias = resolvedAlias;
                 config.resolve = resolve;
             }
+        },
+        configureServer(server) {
+            watchLocalFiles(
+                server,
+                localDocumentModelsPath,
+                localDocumentEditorsPath,
+            );
         },
         resolveId: id => {
             // if the path was not provided then declares the local

@@ -25,72 +25,6 @@ logger.warn = (msg, options) => {
     loggerWarn(msg, options);
 };
 
-/**
- * @param {string | undefined} documentModelsPath
- * @param {string | undefined} editorsPath
- * @return {import('vite').PluginOption}
- * */
-export function WatchLocalPlugin(
-    documentModelsPath: string,
-    editorsPath: string,
-): Plugin {
-    return {
-        name: 'vite-plugin-watch-custom-path',
-        configureServer(server) {
-            if (documentModelsPath) {
-                // Use fs to watch the file and trigger a server reload when it changes
-                console.log(
-                    `Watching local document models at '${documentModelsPath}'...`,
-                );
-                try {
-                    fs.watch(
-                        documentModelsPath,
-                        {
-                            recursive: true,
-                        },
-                        (event, filename) => {
-                            console.log(
-                                `Local document models changed, reloading server...`,
-                            );
-                            server.ws.send({
-                                type: 'full-reload',
-                                path: '*',
-                            });
-                        },
-                    );
-                } catch (e) {
-                    console.error('Error watching local document models', e);
-                }
-            }
-
-            if (editorsPath) {
-                console.log(
-                    `Watching local document editors at '${editorsPath}'...`,
-                );
-                try {
-                    fs.watch(
-                        editorsPath,
-                        {
-                            recursive: true,
-                        },
-                        (event, filename) => {
-                            console.log(
-                                `Local document models changed, reloading server...`,
-                            );
-                            server.ws.send({
-                                type: 'full-reload',
-                                path: '*',
-                            });
-                        },
-                    );
-                } catch (e) {
-                    console.error('Error watching local document models', e);
-                }
-            }
-        },
-    };
-}
-
 function runShellScriptPlugin(scriptPath: string): Plugin {
     return {
         name: 'vite-plugin-run-shell-script',
@@ -131,6 +65,9 @@ export async function startServer() {
             port: PORT,
             open: true,
         },
+        optimizeDeps: {
+            include: [],
+        },
         plugins: [
             viteConnectDevStudioPlugin(),
             viteEnvs({
@@ -138,7 +75,6 @@ export async function startServer() {
                 computedEnv: studioConfig,
             }),
             runShellScriptPlugin(viteEnvsScript),
-            // WatchLocalPlugin(LOCAL_DOCUMENT_MODELS, LOCAL_DOCUMENT_EDITORS),
         ],
     };
 
