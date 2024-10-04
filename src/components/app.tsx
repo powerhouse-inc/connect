@@ -25,25 +25,27 @@ const Preloader = () => {
     return null;
 };
 
-export default (
-    <React.StrictMode>
-        <Suspense fallback={<>{/* TODO loading */}</>}>
-            <Provider store={atomStore}>
-                <Preloader />
-                <WagmiContext>
-                    <RootProvider>
-                        <ReadModeContextProvider>
-                            <UiNodesContextProvider>
-                                <ToastContainer position="bottom-right" />
-                                <ModalManager>
-                                    <Router />
-                                    <CookieBanner />
-                                </ModalManager>
-                            </UiNodesContextProvider>
-                        </ReadModeContextProvider>
-                    </RootProvider>
-                </WagmiContext>
-            </Provider>
-        </Suspense>
-    </React.StrictMode>
-);
+export default function App() {
+    return (
+        <React.StrictMode>
+            <Suspense fallback={<>{/* TODO loading */}</>}>
+                <Provider store={atomStore}>
+                    <Preloader />
+                    <WagmiContext>
+                        <RootProvider>
+                            <ReadModeContextProvider>
+                                <UiNodesContextProvider>
+                                    <ToastContainer position="bottom-right" />
+                                    <ModalManager>
+                                        <Router />
+                                        <CookieBanner />
+                                    </ModalManager>
+                                </UiNodesContextProvider>
+                            </ReadModeContextProvider>
+                        </RootProvider>
+                    </WagmiContext>
+                </Provider>
+            </Suspense>
+        </React.StrictMode>
+    );
+}

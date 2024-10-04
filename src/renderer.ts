@@ -26,7 +26,7 @@
  * ```
  */
 import { createRoot } from 'react-dom/client';
-import App from './components/app';
+import AppLoader from './components/app-loader';
 import './i18n';
 import './index.css';
 import { DocumentEditorDebugTools } from './utils/document-editor-debug-tools';
@@ -43,4 +43,4 @@ if (import.meta.env.MODE === 'development') {
     serviceWorkerManager.registerServiceWorker(false);
 }
 
-createRoot(AppElement).render(App);
+createRoot(AppElement).render(AppLoader());

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import jotaiDebugLabel from 'jotai/babel/plugin-debug-label';
 import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 import path from 'path';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { HtmlTagDescriptor, PluginOption, defineConfig, loadEnv } from 'vite';
 import { viteEnvs } from 'vite-envs';
 import { createHtmlPlugin } from 'vite-plugin-html';
@@ -69,6 +70,10 @@ export default defineConfig(({ mode }) => {
                 };
             },
         }),
+        visualizer({
+            filename: './dist/stats.html', // Output file
+            open: true, // Open the report automatically in the browser
+        }),
     ] as const;
 
     if (uploadSentrySourcemaps) {
@@ -101,10 +106,21 @@ export default defineConfig(({ mode }) => {
                 },
                 output: {
                     // Ensure the service worker file goes to the root of the dist folder
-                    entryFileNames: chunk =>
-                        ['service-worker'].includes(chunk.name)
+                    entryFileNames: chunk => {
+                        return ['service-worker'].includes(chunk.name)
                             ? `${chunk.name}.js`
-                            : 'assets/[name].[hash].js',
+                            : 'assets/[name].[hash].js';
+                    },
+                    manualChunks(id, meta) {
+                        if (id.includes('design-system')) {
+                            const module = meta.getModuleInfo(id);
+                            console.log(
+                                id,
+                                module?.importers,
+                                module?.dynamicImporters,
+                            );
+                        }
+                    },
                 },
             },
         },
