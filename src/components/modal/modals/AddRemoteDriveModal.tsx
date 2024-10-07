@@ -3,6 +3,7 @@ import {
     AddRemoteDriveModal as ConnectAddRemoteDriveModal,
     SharingType,
 } from '@powerhousedao/design-system';
+import { requestPublicDrive } from 'document-drive/utils/graphql';
 
 type Props = {
     open: boolean;
@@ -24,6 +25,7 @@ export function AddRemoteDriveModal(props: Props) {
             open={open}
             onSubmit={onSubmit}
             sharingType={groupSharingType}
+            requestPublicDrive={requestPublicDrive}
             onOpenChange={status => {
                 if (!status) return onClose();
             }}
