@@ -1,3 +1,18 @@
+# [1.0.0-next.13](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.12...v1.0.0-next.13) (2024-10-15)
+
+
+### Bug Fixes
+
+* **connect:** updated base path of connect staging ([c5e637b](https://github.com/powerhouse-inc/document-model-electron/commit/c5e637b6f1ef978804c7f7995dd131cff0270696))
+
+
+### Features
+
+* fixed browser storage check ([175b59b](https://github.com/powerhouse-inc/document-model-electron/commit/175b59b5d22de9f277bbdb5f4e3174f8187eb58d))
+* merge branch 'develop' into staging ([68939f9](https://github.com/powerhouse-inc/document-model-electron/commit/68939f9f6b2147b9eae5782b137d28ae10d67f75))
+* merge branch 'develop' into staging ([bd1dbe5](https://github.com/powerhouse-inc/document-model-electron/commit/bd1dbe5834924f905f72a0c307ff9a39944e4b23))
+* updated document-drive ([0bf0109](https://github.com/powerhouse-inc/document-model-electron/commit/0bf01090774a2de3726cb9e739f7803603b2d552))
+
 # [1.0.0-next.13](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-next.12...v1.0.0-next.13) (2024-09-18)
 
 
