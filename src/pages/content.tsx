@@ -1,4 +1,8 @@
-import { Breadcrumbs, FILE } from '@powerhousedao/design-system';
+import {
+    Breadcrumbs,
+    FILE,
+    getDocumentIconSrc,
+} from '@powerhousedao/design-system';
 import { Document, DocumentModel, Operation } from 'document-model/document';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -181,7 +185,7 @@ const Content = () => {
                                     <h3 className="mb-3 mt-4 text-xl font-bold text-gray-600">
                                         New document
                                     </h3>
-                                    <div className="flex w-full flex-wrap gap-4">
+                                    <div className="flex w-full flex-wrap gap-2">
                                         {documentModels?.map(doc => (
                                             <Button
                                                 key={doc.documentModel.id}
@@ -189,16 +193,31 @@ const Content = () => {
                                                     doc.documentModel
                                                         .description
                                                 }
-                                                className="bg-gray-200 text-slate-800"
+                                                className="flex items-center gap-x-1 border border-gray-400 bg-white px-2 text-xs text-slate-800 shadow-none transition-all hover:scale-105 hover:bg-white"
                                                 onClick={() =>
                                                     createDocument(doc)
                                                 }
                                             >
-                                                <span className="text-sm">
-                                                    {getDocumentModelName(
-                                                        doc.documentModel.name,
+                                                <img
+                                                    alt="file icon"
+                                                    className="max-w-none"
+                                                    height={34}
+                                                    src={getDocumentIconSrc(
+                                                        doc.documentModel.id,
                                                     )}
-                                                </span>
+                                                    width={24}
+                                                />
+                                                <div className="flex flex-col items-start">
+                                                    <span className="text-xs font-semibold text-gray-700">
+                                                        {getDocumentModelName(
+                                                            doc.documentModel
+                                                                .name,
+                                                        )}
+                                                    </span>
+                                                    <span className="text-[10px] text-gray-600">
+                                                        {doc.documentModel.id}
+                                                    </span>
+                                                </div>
                                             </Button>
                                         ))}
                                     </div>
