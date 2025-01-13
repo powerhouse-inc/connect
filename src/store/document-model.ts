@@ -1,3 +1,4 @@
+import { AtlasFeedbackIssues } from '@powerhousedao/atlas-feedback-issues/document-models';
 import * as DocumentModels from 'document-model-libs/document-models';
 import { Action, DocumentModel } from 'document-model/document';
 import { module as DocumentModelLib } from 'document-model/document-model';
@@ -26,6 +27,7 @@ async function loadDynamicModels() {
 
 export const baseDocumentModelsMap: Record<string, DocumentModel> = {
     DocumentModel: DocumentModelLib as DocumentModel,
+    AtlasFeedbackIssues: AtlasFeedbackIssues as DocumentModel,
     ...(DocumentModels as Record<string, DocumentModel>),
 };
 

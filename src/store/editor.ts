@@ -1,6 +1,7 @@
 import type { ExtendedEditor } from 'document-model-libs';
 import { atom, useAtomValue } from 'jotai';
 import { unwrap } from 'jotai/utils';
+import { AtlasFeedbackIssuesEditor } from 'src/components/atlas-editor';
 import { useDefaultDocumentModelEditor } from 'src/hooks/useDefaultDocumentModelEditor';
 
 export const LOCAL_DOCUMENT_EDITORS = import.meta.env.LOCAL_DOCUMENT_EDITORS;
@@ -10,6 +11,8 @@ async function loadEditors() {
         'document-model-libs/editors'
     )) as Record<string, ExtendedEditor>;
     const baseEditors = Object.values(baseEditorsModules);
+
+    baseEditors.push(AtlasFeedbackIssuesEditor as ExtendedEditor);
 
     if (!LOCAL_DOCUMENT_EDITORS) {
         return baseEditors;
