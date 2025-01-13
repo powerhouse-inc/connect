@@ -28,4 +28,5 @@ jobs:
             --build-arg PH_CONNECT_ROUTER_BASENAME=/sky-atlas/staging/connect
             --build-arg PH_CONNECT_SEARCH_BAR_ENABLED=false
             --build-arg PH_CONNECT_DEFAULT_DRIVES_URL=https://apps.powerhouse.io/sky-atlas/staging/switchboard/d/sky-atlas
+            --build-arg PH_CONNECT_ATLAS_BASE_URL=https://mips-portal-staging-beta.vercel.app
           process_type: web
