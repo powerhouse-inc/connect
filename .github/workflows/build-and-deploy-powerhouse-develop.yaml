@@ -12,10 +12,10 @@ jobs:
     environment: develop
     runs-on: ubuntu-latest
     steps:
-      # Check-out your repository.
+      - name: Set up heroku
+        run: sudo curl https://cli-assets.heroku.com/install.sh | sh
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Build, Push and Release APP to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
