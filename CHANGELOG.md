@@ -1,3 +1,24 @@
+# [1.0.0-dev.184](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.183...v1.0.0-dev.184) (2025-01-08)
+
+
+### Features
+
+* update deps ([#634](https://github.com/powerhouse-inc/document-model-electron/issues/634)) ([842a0ba](https://github.com/powerhouse-inc/document-model-electron/commit/842a0ba712b8caff47afae910f4fc8fd725607f3))
+
+# [1.0.0-dev.183](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.182...v1.0.0-dev.183) (2025-01-08)
+
+
+### Features
+
+* update deps ([#633](https://github.com/powerhouse-inc/document-model-electron/issues/633)) ([5c6522c](https://github.com/powerhouse-inc/document-model-electron/commit/5c6522c13aa27b45507239de30ae43352a721f87))
+
+# [1.0.0-dev.182](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.181...v1.0.0-dev.182) (2025-01-08)
+
+
+### Bug Fixes
+
+* base href ([69990b7](https://github.com/powerhouse-inc/document-model-electron/commit/69990b76bc3c0748d6cd1875ad9eb3c799f87538))
+
 # [1.0.0-dev.181](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.180...v1.0.0-dev.181) (2024-12-20)
 
 
