@@ -1,12 +1,8 @@
+import { PowerhouseConfig } from '@powerhousedao/config/powerhouse';
 import { Command } from 'commander';
 import fs from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { startServer } from './server';
-
-type PowerhouseConfig = {
-    documentModelsDir?: string;
-    editorsDir?: string;
-};
 
 const readJsonFile = (filePath: string): PowerhouseConfig | null => {
     try {
@@ -54,6 +50,10 @@ export function startConnectStudio(options: ConnectStudioOptions) {
             process.env.LOCAL_DOCUMENT_EDITORS = isAbsolute(config.editorsDir)
                 ? config.editorsDir
                 : join(configFileDir, config.editorsDir);
+        }
+
+        if (config.projects && config.projects.length > 0) {
+            process.env.LOAD_PROJECTS = config.projects.join(';');
         }
     }
 

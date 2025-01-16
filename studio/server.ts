@@ -118,6 +118,7 @@ export async function startServer() {
                     'node_modules',
                     'document-model-libs',
                 ),
+                'load-projects': '/Users/gpuente/Projects/powerhouse/invoice',
                 react: join(projectRoot, 'node_modules', 'react'),
                 'react-dom': join(projectRoot, 'node_modules', 'react-dom'),
             },

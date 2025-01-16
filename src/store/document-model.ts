@@ -1,3 +1,4 @@
+import { ExtendedEditor } from 'document-model-libs';
 import * as DocumentModels from 'document-model-libs/document-models';
 import { Action, DocumentModel } from 'document-model/document';
 import { module as DocumentModelLib } from 'document-model/document-model';
@@ -7,6 +8,77 @@ import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
 import { atomStore } from '.';
 
 export const LOCAL_DOCUMENT_MODELS = import.meta.env.LOCAL_DOCUMENT_MODELS;
+export const LOAD_PROJECTS = import.meta.env.LOAD_PROJECTS;
+
+export type Module = {
+    documentModels?: DocumentModel[];
+    editors?: ExtendedEditor[];
+};
+
+// async function loadPackages() {
+//     if (!LOAD_PROJECTS || LOAD_PROJECTS === '') {
+//         return [];
+//     }
+
+//     const projects = LOAD_PROJECTS.split(';');
+//     const packages = projects.map(async project => {
+//         try {
+//             const module = (await import(project)) as Module;
+//             return module;
+//         } catch (e) {
+//             console.error('Error loading project', project, e);
+//             return null;
+//         }
+//     });
+
+//     const result = (await Promise.all(packages))
+//         .filter(module => {
+//             return !!module && !!module.documentModels;
+//         })
+//         .map(module => (module as Required<Module>).documentModels)
+//         .reduce((acc, val) => acc.concat(val), []);
+
+//     return result;
+// }
+
+async function loadPackages() {
+    if (!LOAD_PROJECTS || LOAD_PROJECTS === '') {
+        return [];
+    }
+
+    // const module = await import(
+    //     '../../node_modules/@powerhousedao/atlas-feedback-issues/dist/es/index.js'
+    // );
+
+    // console.log('>>>module:', module);
+
+    const module = await import('load-projects');
+    console.log('>>>111module:', module);
+
+    const projects = LOAD_PROJECTS.split(';');
+    console.log('>>>projects:', projects);
+
+    const packages = projects.map(async project => {
+        try {
+            const module = (await import(project)) as Module;
+            return module;
+        } catch (e) {
+            console.error('Error loading project', project, e);
+            return null;
+        }
+    });
+
+    const result = (await Promise.all(packages)).filter(module => !!module);
+
+    return result;
+}
+
+function getDocumentModelsFromModules(modules: Module[]) {
+    return modules
+        .filter(module => !!module.documentModels)
+        .map(module => (module as Required<Module>).documentModels)
+        .reduce((acc, val) => acc.concat(val), []);
+}
 
 async function loadDynamicModels() {
     if (!LOCAL_DOCUMENT_MODELS) {
@@ -17,6 +89,7 @@ async function loadDynamicModels() {
             'LOCAL_DOCUMENT_MODELS'
         )) as unknown as Record<string, DocumentModel>;
         console.log('Loaded local document models:', localModules);
+
         return Object.values(localModules);
     } catch (e) {
         console.error('Error loading local document models', e);
@@ -33,12 +106,21 @@ export const baseDocumentModels = Object.values(baseDocumentModelsMap);
 
 const dynamicDocumentModels = loadDynamicModels();
 
+export const packagesDocumentModels = loadPackages();
+
 const dynamicDocumentModelsAtom = atom<Promise<DocumentModel[]>>(
     dynamicDocumentModels,
 );
 
+const packagesDocumentModelsAtom = atom<Promise<Module[]>>(
+    packagesDocumentModels,
+);
+
 export const documentModelsAtom = atom(async get => {
     const dynamicDocumentModels = await get(dynamicDocumentModelsAtom);
+    const pkgDocumentModels = await get(packagesDocumentModelsAtom);
+
+    console.log('>>>pkgDocumentModels:', pkgDocumentModels);
     const newDocumentModelIds = dynamicDocumentModels.map(
         dm => dm.documentModel.id,
     );
@@ -47,6 +129,7 @@ export const documentModelsAtom = atom(async get => {
             dm => !newDocumentModelIds.includes(dm.documentModel.id),
         ),
         ...dynamicDocumentModels,
+        ...getDocumentModelsFromModules(pkgDocumentModels),
     ];
 });
 

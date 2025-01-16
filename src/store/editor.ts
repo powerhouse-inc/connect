@@ -2,6 +2,7 @@ import type { ExtendedEditor } from 'document-model-libs';
 import { atom, useAtomValue } from 'jotai';
 import { unwrap } from 'jotai/utils';
 import { useDefaultDocumentModelEditor } from 'src/hooks/useDefaultDocumentModelEditor';
+import { Module, packagesDocumentModels } from './document-model';
 
 export const LOCAL_DOCUMENT_EDITORS = import.meta.env.LOCAL_DOCUMENT_EDITORS;
 
@@ -10,6 +11,13 @@ async function loadEditors() {
         'document-model-libs/editors'
     )) as Record<string, ExtendedEditor>;
     const baseEditors = Object.values(baseEditorsModules);
+
+    const pkgEditors = (await packagesDocumentModels)
+        .filter(module => !!module.editors)
+        .map(module => (module as Required<Module>).editors)
+        .reduce((acc, val) => acc.concat(val), []);
+
+    baseEditors.push(...pkgEditors);
 
     if (!LOCAL_DOCUMENT_EDITORS) {
         return baseEditors;
