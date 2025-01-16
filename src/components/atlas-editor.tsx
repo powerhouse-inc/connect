@@ -17,13 +17,23 @@ function AtlasFeedbackIssuesContainer(
 ) {
     const scopes = useScopes();
     const [selectedIssuePhid, setSelectedIssuePhid] = useState<
-        string | undefined
-    >();
+        string | null
+    >(null);
+    const [selectedNotionId, setSelectedNotionId] = useState<string | null>(
+        null
+    );
+    const [selectedCommentPhid, setSelectedCommentPhid] = useState<string | null>(
+        null
+    );
     return (
         <AtlasFeedbackIssues.Component
             {...props}
             selectedIssuePhid={selectedIssuePhid}
             setSelectedIssuePhid={setSelectedIssuePhid}
+            selectedNotionId={selectedNotionId}
+            setSelectedNotionId={setSelectedNotionId}
+            selectedCommentPhid={selectedCommentPhid}
+            setSelectedCommentPhid={setSelectedCommentPhid}
             scopes={scopes}
         />
     );
