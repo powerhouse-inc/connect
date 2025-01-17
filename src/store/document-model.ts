@@ -13,6 +13,9 @@ async function loadDynamicModels() {
         return [];
     }
     try {
+        const module = await import('EXTERNAL_PROJECTS');
+        console.log('>>> dummy module', module);
+
         const localModules = (await import(
             'LOCAL_DOCUMENT_MODELS'
         )) as unknown as Record<string, DocumentModel>;
