@@ -104,7 +104,7 @@ export function generateImportSctipt(outputPath: string, projects: Project[]) {
         }
     }
 
-    const exportStatement = `export default { ${moduleNames.join(', ')} }`;
+    const exportStatement = `export default [${moduleNames.join(', ')}];`;
 
     const fileContent = `${imports.join('\n')}\n\n${exportStatement}`;
 
