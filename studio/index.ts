@@ -1,23 +1,9 @@
+import { PowerhouseConfig } from '@powerhousedao/config/powerhouse';
 import { Command } from 'commander';
 import fs from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { startServer, StartServerOptions } from './server';
-
-// TODO: repleace this by phconfig
-export type PowerhouseConfig = {
-    documentModelsDir: string;
-    editorsDir: string;
-    processorsDir: string;
-    subgraphsDir: string;
-    interactive?: boolean;
-    skipFormat?: boolean;
-    watch?: boolean;
-    projects?: {
-        packageName: string;
-        global: boolean;
-    }[];
-};
 
 export type Project = {
     name: string;
