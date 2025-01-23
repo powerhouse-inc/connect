@@ -46,6 +46,7 @@ type ImportMetaEnv = {
   PH_CONNECT_GA_TRACKING_ID: string
   LOCAL_DOCUMENT_MODELS: string
   LOCAL_DOCUMENT_EDITORS: string
+  LOAD_EXTERNAL_PROJECTS: string
   PH_CONNECT_ATLAS_BASE_URL: string
   // @user-defined-start
   /*

@@ -8,6 +8,39 @@ import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
 import { atomStore } from '.';
 
 export const LOCAL_DOCUMENT_MODELS = import.meta.env.LOCAL_DOCUMENT_MODELS;
+const LOAD_EXTERNAL_PROJECTS = import.meta.env.LOAD_EXTERNAL_PROJECTS;
+
+export type ExternalProjectModule = {
+    documentModels?: DocumentModel[];
+    editors?: ExtendedEditor[];
+};
+
+export async function loadPackages(): Promise<ExternalProjectModule[]> {
+    if (!LOAD_EXTERNAL_PROJECTS || LOAD_EXTERNAL_PROJECTS !== 'true') {
+        return [];
+    }
+
+    try {
+        const module = (await import('EXTERNAL_PROJECTS')) as unknown as {
+            default: ExternalProjectModule[];
+        };
+
+        return module.default;
+    } catch (e) {
+        console.error('Error loading external projects', e);
+        return [];
+    }
+}
+
+function getDocumentModelsFromModules(modules: ExternalProjectModule[]) {
+    return modules
+        .filter(module => !!module.documentModels)
+        .map(
+            module =>
+                (module as Required<ExternalProjectModule>).documentModels,
+        )
+        .reduce((acc, val) => acc.concat(val), []);
+}
 
 async function loadDynamicModels() {
     if (!LOCAL_DOCUMENT_MODELS) {
@@ -35,12 +68,20 @@ export const baseDocumentModels = Object.values(baseDocumentModelsMap);
 
 const dynamicDocumentModels = loadDynamicModels();
 
+export const packagesDocumentModels = loadPackages();
+
 const dynamicDocumentModelsAtom = atom<Promise<DocumentModel[]>>(
     dynamicDocumentModels,
 );
 
+const packagesDocumentModelsAtom = atom<Promise<ExternalProjectModule[]>>(
+    packagesDocumentModels,
+);
+
 export const documentModelsAtom = atom(async get => {
     const dynamicDocumentModels = await get(dynamicDocumentModelsAtom);
+    const pkgDocumentModels = await get(packagesDocumentModelsAtom);
+
     const newDocumentModelIds = dynamicDocumentModels.map(
         dm => dm.documentModel.id,
     );
@@ -49,6 +90,7 @@ export const documentModelsAtom = atom(async get => {
             dm => !newDocumentModelIds.includes(dm.documentModel.id),
         ),
         ...dynamicDocumentModels,
+        ...getDocumentModelsFromModules(pkgDocumentModels),
     ];
 });
 

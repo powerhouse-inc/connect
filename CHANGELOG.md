@@ -1,3 +1,45 @@
+# [1.0.0-dev.191](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.190...v1.0.0-dev.191) (2025-01-22)
+
+
+### Features
+
+* update readme ([6191550](https://github.com/powerhouse-inc/document-model-electron/commit/6191550f596ff26143d2e918190bb14a037949bf))
+
+# [1.0.0-dev.190](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.189...v1.0.0-dev.190) (2025-01-21)
+
+
+### Bug Fixes
+
+* listen on all network interfaces ([06d7e90](https://github.com/powerhouse-inc/document-model-electron/commit/06d7e9041ecd5650bf3183f01ef7754f83dc5194))
+
+# [1.0.0-dev.189](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.188...v1.0.0-dev.189) (2025-01-21)
+
+
+### Features
+
+* fix dynamic loading packages with npm ([#644](https://github.com/powerhouse-inc/document-model-electron/issues/644)) ([a9fe762](https://github.com/powerhouse-inc/document-model-electron/commit/a9fe762e043dc350d6bc500b7aacee78d411eeeb))
+
+# [1.0.0-dev.188](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.187...v1.0.0-dev.188) (2025-01-21)
+
+
+### Features
+
+* fix load empty packages ([#643](https://github.com/powerhouse-inc/document-model-electron/issues/643)) ([c1300b3](https://github.com/powerhouse-inc/document-model-electron/commit/c1300b3b7ca8f876844bfa455184146bd4d3c702))
+
+# [1.0.0-dev.187](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.186...v1.0.0-dev.187) (2025-01-21)
+
+
+### Features
+
+* read port and openBrowser from config file ([#642](https://github.com/powerhouse-inc/document-model-electron/issues/642)) ([11439fc](https://github.com/powerhouse-inc/document-model-electron/commit/11439fc527be0270744a6e33c6f30d6bc5b26744))
+
+# [1.0.0-dev.186](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.185...v1.0.0-dev.186) (2025-01-21)
+
+
+### Features
+
+* update dynamic loading packages ([#641](https://github.com/powerhouse-inc/document-model-electron/issues/641)) ([3b964b2](https://github.com/powerhouse-inc/document-model-electron/commit/3b964b26b60297a3167a712db27692a88c6d7719))
+
 # [1.0.0-dev.185](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.184...v1.0.0-dev.185) (2025-01-14)
 
 

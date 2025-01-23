@@ -5,7 +5,16 @@ import { fileURLToPath } from 'node:url';
 import { createLogger, createServer, InlineConfig, Plugin } from 'vite';
 import { viteEnvs } from 'vite-envs';
 import { backupIndexHtml, removeBase64EnvValues } from './helpers';
-import { getStudioConfig, viteConnectDevStudioPlugin } from './vite-plugin';
+import {
+    getStudioConfig,
+    viteConnectDevStudioPlugin,
+    viteLoadExternalProjects,
+} from './vite-plugin';
+
+export type StartServerOptions = {
+    projectsImportPath?: string;
+    enableExternalProjects?: boolean;
+};
 
 const studioDirname = fileURLToPath(new URL('.', import.meta.url));
 const appPath = join(studioDirname, '..');
@@ -64,7 +73,9 @@ function runShellScriptPlugin(scriptPath: string): Plugin {
     };
 }
 
-export async function startServer() {
+export async function startServer(options: StartServerOptions = {}) {
+    const { enableExternalProjects = true } = options;
+
     // exits if node version is not compatible
     ensureNodeVersion();
 
@@ -72,6 +83,12 @@ export async function startServer() {
     backupIndexHtml(true);
 
     const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+    const HOST = process.env.HOST ? process.env.HOST : "0.0.0.0";
+
+    const OPEN_BROWSER =
+        typeof process.env.OPEN_BROWSER === 'string'
+            ? process.env.OPEN_BROWSER === 'true'
+            : true;
     const studioConfig = getStudioConfig();
 
     // needed for viteEnvs
@@ -87,11 +104,12 @@ export async function startServer() {
         root: appPath,
         server: {
             port: PORT,
-            open: true,
-            host: Boolean(process.env.HOST),
+            open: OPEN_BROWSER,
+            host: HOST,
         },
         resolve: {
             alias: {
+                jszip: 'jszip/dist/jszip.min.js',
                 // Resolve to the node_modules in the project root
                 '@powerhousedao/design-system/scalars': join(
                     projectRoot,
@@ -124,6 +142,10 @@ export async function startServer() {
         },
         plugins: [
             viteConnectDevStudioPlugin(true),
+            viteLoadExternalProjects(
+                enableExternalProjects,
+                options.projectsImportPath,
+            ),
             viteEnvs({
                 declarationFile: join(studioDirname, '../.env'),
                 computedEnv: studioConfig,
