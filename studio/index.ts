@@ -44,9 +44,12 @@ function mapProjects(packages: PowerhouseConfig['packages']): Project[] {
 export type ConnectStudioOptions = {
     port?: string;
     host?: boolean;
+    https?: boolean;
     configFile?: string;
     localEditors?: string;
     localDocuments?: string;
+    open?: boolean;
+    packages?: { packageName: string }[];
 };
 
 export function generateImportSctipt(outputPath: string, projects: Project[]) {
@@ -87,7 +90,7 @@ export function generateImportSctipt(outputPath: string, projects: Project[]) {
 }
 
 export function startConnectStudio(options: ConnectStudioOptions) {
-    let serverOptions: StartServerOptions = {};
+    const serverOptions: StartServerOptions = {};
 
     if (options.port) {
         process.env.PORT = options.port;
@@ -95,6 +98,10 @@ export function startConnectStudio(options: ConnectStudioOptions) {
 
     if (options.host) {
         process.env.HOST = options.host.toString();
+    }
+
+    if (typeof options.open === 'boolean') {
+        serverOptions.open = options.open;
     }
 
     if (options.configFile) {
@@ -108,13 +115,14 @@ export function startConnectStudio(options: ConnectStudioOptions) {
             generateImportSctipt(configFileDir, packages);
             process.env.LOAD_EXTERNAL_PROJECTS = 'true';
 
-            serverOptions = {
-                enableExternalProjects: true,
-                projectsImportPath: resolve(configFileDir, IMPORT_SCRIPT_FILE),
-            };
+            serverOptions.enableExternalProjects = true;
+            serverOptions.projectsImportPath = resolve(
+                configFileDir,
+                IMPORT_SCRIPT_FILE,
+            );
         } else {
             process.env.LOAD_EXTERNAL_PROJECTS = 'false';
-            serverOptions = { enableExternalProjects: false };
+            serverOptions.enableExternalProjects = false;
         }
 
         if (config.documentModelsDir) {
@@ -144,7 +152,19 @@ export function startConnectStudio(options: ConnectStudioOptions) {
         }
     } else {
         process.env.LOAD_EXTERNAL_PROJECTS = 'false';
-        serverOptions = { enableExternalProjects: false };
+        serverOptions.enableExternalProjects = false;
+    }
+
+    if (options.packages && options.packages.length > 0) {
+        const packages = mapProjects(options.packages);
+        generateImportSctipt(projectRoot, packages);
+        process.env.LOAD_EXTERNAL_PROJECTS = 'true';
+
+        serverOptions.enableExternalProjects = true;
+        serverOptions.projectsImportPath = resolve(
+            projectRoot,
+            IMPORT_SCRIPT_FILE,
+        );
     }
 
     if (options.localEditors) {
@@ -153,6 +173,10 @@ export function startConnectStudio(options: ConnectStudioOptions) {
 
     if (options.localDocuments) {
         process.env.LOCAL_DOCUMENT_MODELS = options.localDocuments;
+    }
+
+    if (options.https) {
+        serverOptions.https = options.https;
     }
 
     return startServer(serverOptions).catch(error => {
@@ -167,6 +191,8 @@ program
     .description('Connect Studio CLI')
     .option('-p, --port <port>', 'Port to run the server on', '3000')
     .option('-h, --host', 'Expose the server to the network')
+    .option('--https', 'Enable HTTPS')
+    .option('--open', 'Open the browser on start')
     .option(
         '--config-file <configFile>',
         'Path to the powerhouse.config.js file',

@@ -1,3 +1,31 @@
+# [1.0.0-dev.195](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.194...v1.0.0-dev.195) (2025-01-23)
+
+
+### Features
+
+* update deps ([#652](https://github.com/powerhouse-inc/document-model-electron/issues/652)) ([214c646](https://github.com/powerhouse-inc/document-model-electron/commit/214c6463ee9e406c560235917b3e6971af549c30))
+
+# [1.0.0-dev.194](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.193...v1.0.0-dev.194) (2025-01-23)
+
+
+### Features
+
+* enable packages option ([#651](https://github.com/powerhouse-inc/document-model-electron/issues/651)) ([78cfc7a](https://github.com/powerhouse-inc/document-model-electron/commit/78cfc7a00323ed06603f2ae17d1666bc1d959df7))
+
+# [1.0.0-dev.193](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.192...v1.0.0-dev.193) (2025-01-23)
+
+
+### Features
+
+* add open option to studio ([#650](https://github.com/powerhouse-inc/document-model-electron/issues/650)) ([218ff77](https://github.com/powerhouse-inc/document-model-electron/commit/218ff770515b0097022a945580ecd66a23aa92d8))
+
+# [1.0.0-dev.192](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.191...v1.0.0-dev.192) (2025-01-23)
+
+
+### Features
+
+* allows running studio on https with self-certificate ([8407dcf](https://github.com/powerhouse-inc/document-model-electron/commit/8407dcffb9e9713bc0b16445ef4c10ee26a35b6a))
+
 # [1.0.0-dev.191](https://github.com/powerhouse-inc/document-model-electron/compare/v1.0.0-dev.190...v1.0.0-dev.191) (2025-01-22)
 
 
