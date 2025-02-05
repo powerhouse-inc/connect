@@ -1,3 +1,4 @@
+import { module as Invoice } from '@sky-ph/atlas/invoice';
 import * as DocumentModels from 'document-model-libs/document-models';
 import { Action, DocumentModel } from 'document-model/document';
 import { module as DocumentModelLib } from 'document-model/document-model';
@@ -7,6 +8,7 @@ import { useFeatureFlag } from 'src/hooks/useFeatureFlags';
 export const documentModels = [
     DocumentModelLib,
     ...Object.values(DocumentModels),
+    Invoice,
 ] as DocumentModel[];
 
 export const documentModelsAtom = atom(documentModels);

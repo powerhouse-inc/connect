@@ -4,7 +4,13 @@ import { unwrap } from 'jotai/utils';
 
 async function loadEditors() {
     const Editors = await import('document-model-libs/editors');
-    return [...Object.values(Editors)] as ExtendedEditor[];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const InvoiceEditor = await import('@sky-ph/atlas/editors/invoice');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return [
+        ...Object.values(Editors),
+        InvoiceEditor.default,
+    ] as ExtendedEditor[];
 }
 
 const editorsAtom = atom<Promise<ExtendedEditor[]>>(loadEditors);

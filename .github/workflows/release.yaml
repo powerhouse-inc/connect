@@ -1,8 +1,6 @@
 name: Release
 
 on:
-    push:
-        branches: [main, staging, develop]
     workflow_dispatch:
 
 env:
