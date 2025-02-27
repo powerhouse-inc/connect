@@ -1,3 +1,6 @@
+# This repository has been migrated to [Powerhouse Monorepo](https://github.com/powerhouse-inc/powerhouse)
+Connect is an app within this repo and the legacy implementation will gradually be replaced. 
+
 # Powerhouse Connect
 
 Open-source desktop and web application for document model management.
